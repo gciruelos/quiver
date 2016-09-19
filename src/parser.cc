@@ -4,7 +4,7 @@
 
 
 uint64_t LineParser::ParseNode(std::string node) {
-  if (node.size() == 1 && node[0] == 'e') {
+  if (node.size() == 0) {
     return end_node;
   } else {
     return std::stoi(node);

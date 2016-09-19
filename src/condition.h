@@ -18,6 +18,13 @@ class Equality : public Condition {
   uint64_t value_;
 };
 
+class Greater : public Condition {
+ public:
+  Greater(uint64_t value) : value_(value) {}
+  virtual bool Check(uint64_t accumulator);
+ private:
+  uint64_t value_;
+};
 
 class Empty : public Condition {
  public:
