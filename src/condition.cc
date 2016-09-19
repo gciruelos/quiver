@@ -1,17 +1,16 @@
 #include "condition.h"
 
-bool Equality::Check(uint64_t accumulator) {
-  return accumulator == value_;
+bool Equality::Check(ProgramState* state) {
+  return state->GetAccumulator() == value_;
 }
 
-bool Greater::Check(uint64_t accumulator) {
-  return accumulator > value_;
+bool Greater::Check(ProgramState* state) {
+  return state->GetAccumulator() > value_;
 }
 
-bool Empty::Check(uint64_t accumulator __attribute__((unused))) {
+bool Empty::Check(ProgramState* state __attribute__((unused))) {
   return true;
 }
-
 
 std::pair<std::string, std::string> ConsumeOperation(std::string condition) {
   if (condition.empty()) {

@@ -1,39 +1,8 @@
 #include "action.h"
 
-#include <iostream>
 #include <string>
 
 #include "utils.h"
-
-
-
-void Print::Do(uint64_t* accumulator __attribute__((unused))) {
-  std::cout << print_;
-}
-
-void PrintAccumulator::Do(uint64_t* accumulator) {
-  std::cout << *accumulator;
-}
-
-void Substract::Do(uint64_t* accumulator) {
-  *accumulator -= value_;
-}
-
-void Add::Do(uint64_t* accumulator) {
-  *accumulator += value_;
-}
-
-void Decrement::Do(uint64_t* accumulator) {
-  (*accumulator)--;
-}
-
-void Assign::Do(uint64_t* accumulator) {
-  *accumulator = new_val_;
-}
-
-void Nothing::Do(uint64_t* accumulator __attribute__((unused))) {
-  return;
-}
 
 
 std::pair<std::string, std::string> ConsumeAction(std::string action) {
@@ -82,9 +51,9 @@ Action* BuildAction(std::string action) {
   } else if (separated.first == "p") {
     return new PrintAccumulator;
   } else if (separated.first == "s") {
-    return new Nothing; // SaveAccumulator;
+    return new SaveAccumulator;
   } else if (separated.first == "g") {
-    return new Nothing; // GetAccumulator;
+    return new LoadAccumulator;
   } else if (separated.first == "=") {
     return new Assign(std::stoi(separated.second));
   }

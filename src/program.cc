@@ -20,24 +20,25 @@ Program::Program(std::string filename) {
         if_true.first, std::unique_ptr<Action>(if_true.second)));
     actions_[node].insert(std::make_pair(
         if_false.first, std::unique_ptr<Action>(if_false.second)));
+    nodes_.insert(node);
   }
-  current_node_ = 0;
-  accumulator_ = 0;
+  state_ = std::unique_ptr<ProgramState>(new ProgramState(nodes_));
 }
 
 
 void Program::Execute() {
-  while (current_node_ != end_node) {
+  while (state_->GetCurrentNode() != end_node) {
     uint64_t next_node = GetNextNode();
-    actions_[current_node_][next_node]->Do(&accumulator_);
-    current_node_ = next_node;
+    actions_[state_->GetCurrentNode()][next_node]->Do(state_.get());
+    state_->GetCurrentNode() = next_node;
   }
 }
 
 uint64_t Program::GetNextNode() {
- return (conditions_[current_node_]->Check(accumulator_)
-     ? if_true_[current_node_]
-     : if_false_[current_node_]);
+  uint64_t current_node = state_->GetCurrentNode();
+  return (conditions_[current_node]->Check(state_.get())
+      ? if_true_[current_node]
+      : if_false_[current_node]);
 }
 
 

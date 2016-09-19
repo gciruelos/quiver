@@ -44,7 +44,6 @@ LineParser::LineParser(std::string line) {
     action2.push_back(*line_iter++);
   }
   line_iter++;
-  /*
   std::cout << from << " "
             << condition << " "
             << to1 << " " 
@@ -52,7 +51,6 @@ LineParser::LineParser(std::string line) {
             << to2 << " " 
             << action2 << " " 
             << std::endl;
-*/ 
   from_ = ParseNode(from);
   c_ = std::unique_ptr<Condition>(BuildCondition(condition));
   if_true_ = std::make_pair(

@@ -4,16 +4,18 @@
 #include <cstdint>
 #include <string>
 
+#include "state.h"
+
 class Condition {
   public:
-   virtual bool Check(uint64_t accumulator) = 0;
+   virtual bool Check(ProgramState* state) = 0;
 };
 
 
 class Equality : public Condition {
  public:
   Equality(uint64_t value) : value_(value) {}
-  virtual bool Check(uint64_t accumulator);
+  virtual bool Check(ProgramState* state);
  private:
   uint64_t value_;
 };
@@ -21,7 +23,7 @@ class Equality : public Condition {
 class Greater : public Condition {
  public:
   Greater(uint64_t value) : value_(value) {}
-  virtual bool Check(uint64_t accumulator);
+  virtual bool Check(ProgramState* state);
  private:
   uint64_t value_;
 };
@@ -29,7 +31,7 @@ class Greater : public Condition {
 class Empty : public Condition {
  public:
   Empty() {}
-  virtual bool Check(uint64_t accumulator);
+  virtual bool Check(ProgramState* state);
 };
 
 Condition* BuildCondition(std::string condition);
