@@ -1,7 +1,12 @@
+#ifndef PARSER_H
+#define PARSER_H
+
 #include <utility>
+#include <memory>
 
 #include "condition.h"
 #include "action.h"
+#include "node.h"
 
 
 class LineParser {
@@ -9,13 +14,21 @@ class LineParser {
   LineParser(std::string line);
   
   uint64_t GetNode() const;
-  Condition GetCondition() const;
-  std::pair<uint64_t, Action> GetIfTrue() const;
-  std::pair<uint64_t, Action> GetIfFalse() const;
+  Condition* GetCondition();
+  std::pair<uint64_t, Action*> GetIfTrue();
+  std::pair<uint64_t, Action*> GetIfFalse();
 
  private:
   uint64_t from_;
-  Condition c_;
-  std::pair<uint64_t, Action> if_true_;
-  std::pair<uint64_t, Action> if_false_;
-}
+  std::unique_ptr<Condition> c_;
+  std::pair<uint64_t, std::unique_ptr<Action>> if_true_;
+  std::pair<uint64_t, std::unique_ptr<Action>> if_false_;
+
+  const char condition_mark_ = '?';
+  const char open_action_ = '(';
+  const char close_action_ = ')';
+  
+  uint64_t ParseNode(std::string node);
+};
+
+#endif
