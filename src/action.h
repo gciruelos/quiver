@@ -23,49 +23,37 @@ class ActionFactory {
 typedef std::pair<std::string, std::string> ParsedAction;
 
 
+class Nothing : public Action {
+ public:
+  Nothing(ParsedAction);
+  virtual void Do(ProgramState*);
+};
 
 class Print : public Action {
  public:
-  Print(ParsedAction s) : print_(ParseString(s.second)) {}
-  virtual void Do(ProgramState* state __attribute__((unused))) {
-    std::cout << print_;
-  }
+  Print(ParsedAction);
+  virtual void Do(ProgramState*);
  private:
   std::string print_;
 };
 
-class Nothing : public Action {
- public:
-  Nothing(ParsedAction s __attribute__((unused))) {}
-  virtual void Do(ProgramState* state __attribute__((unused))) {
-    return;
-  }
-};
-
-
 class PrintAccumulator : public Action {
  public:
-  PrintAccumulator(ParsedAction s __attribute__((unused))) {}
-  virtual void Do(ProgramState* state __attribute__((unused))) {
-     std::cout << state->Accumulator();
-  }
+  PrintAccumulator(ParsedAction);
+  virtual void Do(ProgramState*);
 };
 
 
 class Decrement : public Action {
  public:
-  Decrement(ParsedAction s __attribute__((unused))) {}
-  virtual void Do(ProgramState* state) {
-    state->Accumulator()--;
-  }
+  Decrement(ParsedAction);
+  virtual void Do(ProgramState*);
 };
 
 class Assign : public Action {
  public:
-  Assign(ParsedAction s) : new_val_(std::stoi(s.second)) {}
-  virtual void Do(ProgramState* state) {
-    state->Accumulator() = new_val_;
-  }
+  Assign(ParsedAction);
+  virtual void Do(ProgramState*);
  private:
   uint64_t new_val_;
 };

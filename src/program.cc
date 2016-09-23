@@ -26,6 +26,17 @@ Program::Program(std::string filename) {
 }
 
 
+Program::~Program() {
+  for (auto& c : conditions_) {
+    c.second.reset(nullptr);
+  }
+  for (auto& a : actions_) {
+    for (auto& b : a.second) {
+      b.second.reset(nullptr);
+    }
+  }
+}
+
 void Program::Execute() {
   while (state_->CurrentNode() != end_node) {
     uint64_t current_node = state_->CurrentNode();

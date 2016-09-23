@@ -4,32 +4,56 @@
 
 #define NOTHING_SYMBOL "_???"
 
-/*
-
-std::unique_ptr<ActionBuilder> ActionBuilder::instance_ = nullptr;
-std::map<std::string, ActionFactory*> ActionBuilder::action_factories;
-std::map<std::string, std::string> ActionBuilder::action_names;
-std::set<std::string> ActionBuilder::symbols;
-*/
-
 #define REGISTER_ACTION(sym,klass) \
     class klass##Factory : public ActionFactory { \
-    public: \
-        klass##Factory() \
-        { \
-            ActionBuilder::Instance().Register(sym, #klass, this); \
-        } \
-        virtual Action* Create(ParsedAction s) { \
-            return new klass(s); \
-        } \
+     public: \
+      klass##Factory() { \
+        ActionBuilder::Instance().Register(sym, #klass, this); \
+      } \
+      virtual Action* Create(ParsedAction s) { \
+        return new klass(s); \
+      } \
     }; \
     static klass##Factory global_##klass##Factory;
 
-REGISTER_ACTION("'", Print)
-REGISTER_ACTION("p", PrintAccumulator)
-REGISTER_ACTION("--", Decrement)
-REGISTER_ACTION("=", Assign)
+
+Nothing::Nothing(ParsedAction s __attribute__((unused))) {
+}
+void Nothing::Do(ProgramState* state __attribute__((unused))) {
+  return;
+}
 REGISTER_ACTION(NOTHING_SYMBOL, Nothing)
+
+
+Print::Print(ParsedAction s) : print_(ParseString(s.second)) {
+}
+void Print::Do(ProgramState* state __attribute__((unused))) {
+  std::cout << print_;
+}
+REGISTER_ACTION("'", Print)
+
+PrintAccumulator::PrintAccumulator(ParsedAction s __attribute__((unused))) {
+}
+void PrintAccumulator::Do(ProgramState* state __attribute__((unused))) {
+  std::cout << state->Accumulator();
+}
+REGISTER_ACTION("p", PrintAccumulator)
+
+
+Decrement::Decrement(ParsedAction s __attribute__((unused))) {
+}
+void Decrement::Do(ProgramState* state) {
+  state->Accumulator()--;
+}
+REGISTER_ACTION("--", Decrement)
+
+
+Assign::Assign(ParsedAction s) : new_val_(std::stoi(s.second)) {
+}
+void Assign::Do(ProgramState* state) {
+  state->Accumulator() = new_val_;
+}
+REGISTER_ACTION("=", Assign)
 
 
 

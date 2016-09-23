@@ -66,9 +66,6 @@ LineParser::LineParser(std::string line) {
 
 }
 
-
-
-
 uint64_t LineParser::GetNode() const {
   return from_;
 }

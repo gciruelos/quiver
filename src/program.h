@@ -16,6 +16,7 @@
 class Program {
  public:
   Program(std::string filename);
+  ~Program();
   void Execute();
  
  private:
