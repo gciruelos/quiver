@@ -1,11 +1,11 @@
 #include "condition.h"
 
 bool Equality::Check(ProgramState* state) {
-  return state->GetAccumulator() == value_;
+  return state->Accumulator() == value_;
 }
 
 bool Greater::Check(ProgramState* state) {
-  return state->GetAccumulator() > value_;
+  return state->Accumulator() > value_;
 }
 
 bool Empty::Check(ProgramState* state __attribute__((unused))) {

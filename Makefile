@@ -1,8 +1,8 @@
 CC = clang++
 WARNINGS = -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual
-CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic -O2 -ggdb
+CFLAGS = $(WARNINGS) -std=c++14 -pedantic -ggdb
 TARGETS = utils.o state.o condition.o action.o parser.o program.o quiver.o
-LIBRARIES = -lm
+LIBRARIES = 
 
 all: quiver
 

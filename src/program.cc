@@ -27,15 +27,24 @@ Program::Program(std::string filename) {
 
 
 void Program::Execute() {
-  while (state_->GetCurrentNode() != end_node) {
+  while (state_->CurrentNode() != end_node) {
+    uint64_t current_node = state_->CurrentNode();
     uint64_t next_node = GetNextNode();
-    actions_[state_->GetCurrentNode()][next_node]->Do(state_.get());
-    state_->GetCurrentNode() = next_node;
+    /*
+    std::cerr << "Current node: " << current_node << "\t"
+              << "Next node: " << next_node << "\t"
+              << "Accumulator value: " << state_->Accumulator() << "\t"
+              << "Current node value: " << state_->CurrentNodeValue()
+              << std::endl;
+    */
+    state_->CurrentNode() = next_node;
+    state_->LastNode() = current_node;
+    actions_[current_node][next_node]->Do(state_.get());
   }
 }
 
 uint64_t Program::GetNextNode() {
-  uint64_t current_node = state_->GetCurrentNode();
+  uint64_t current_node = state_->CurrentNode();
   return (conditions_[current_node]->Check(state_.get())
       ? if_true_[current_node]
       : if_false_[current_node]);
