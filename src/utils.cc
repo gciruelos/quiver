@@ -18,6 +18,12 @@ std::string ParseString(std::string input_string) {
       "\\)", ")");
 }
 
+std::string UndoParseString(std::string input_string) {
+  return ReplaceAll(
+      ReplaceAll(input_string, "\n", "\\n"),
+      ")", "\\)");
+}
+
 std::string SubstringFrom(std::string str, size_t from) {
   return str.substr(from, str.size() - from);
 }

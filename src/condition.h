@@ -12,6 +12,7 @@ typedef std::pair<std::string, std::string> ParsedCondition;
 class Condition {
   public:
    virtual bool Check(ProgramState* state) = 0;
+   virtual std::string Debug() = 0;
 };
 
 class ConditionFactory {
@@ -24,22 +25,30 @@ class Equality : public Condition {
  public:
   Equality(ParsedCondition);
   virtual bool Check(ProgramState* state);
+  virtual std::string Debug();
  private:
   uint64_t value_;
+  bool arg_is_value;
+  static const std::string symbol;
 };
 
 class Greater : public Condition {
  public:
   Greater(ParsedCondition);
   virtual bool Check(ProgramState* state);
+  virtual std::string Debug();
  private:
   uint64_t value_;
+  static const std::string symbol;
 };
 
 class Empty : public Condition {
  public:
   Empty(ParsedCondition);
   virtual bool Check(ProgramState* state);
+  virtual std::string Debug();
+ private:
+  static const std::string symbol;
 };
 
 class ConditionBuilder {
@@ -50,6 +59,7 @@ class ConditionBuilder {
       std::string,
       std::string,
       ConditionFactory*);
+  std::string ConditionName(std::string symbol);
  protected:
   ConditionBuilder() { }
  private:

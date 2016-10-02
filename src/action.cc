@@ -1,14 +1,16 @@
 #include "action.h"
 
 #include <string>
+#include <sstream>
 
 #define NOTHING_SYMBOL "_???"
 
-#define REGISTER_ACTION(sym,klass) \
+#define REGISTER_ACTION(sym_,klass) \
+    const std::string klass::symbol = sym_; \
     class klass##Factory : public ActionFactory { \
      public: \
       klass##Factory() { \
-        ActionBuilder::Instance().Register(sym, #klass, this); \
+        ActionBuilder::Instance().Register(sym_, #klass, this); \
       } \
       virtual Action* Create(ParsedAction s) { \
         return new klass(s); \
@@ -27,7 +29,7 @@ AffectedValue GetAffectedValue(char indicator) {
   }
 }
 
-uint64_t& GetAffectedNode(ProgramState* state, AffectedValue v) {
+uint64_t& AffectedNode(ProgramState* state, AffectedValue v) {
   switch (v) {
     case CURRENT_NODE:
       return state->NodeValue(state->CurrentNode());
@@ -38,12 +40,20 @@ uint64_t& GetAffectedNode(ProgramState* state, AffectedValue v) {
   }
 }
 
+std::string GetActionName(std::string symbol) {
+  return ActionBuilder::Instance().ActionName(symbol);
+}
 
 
 Nothing::Nothing(ParsedAction s __attribute__((unused))) {
 }
 void Nothing::Do(ProgramState* state __attribute__((unused))) {
   return;
+}
+std::string Nothing::Debug() {
+  std::stringstream buffer;
+  buffer << GetActionName(symbol);
+  return buffer.str();
 }
 REGISTER_ACTION(NOTHING_SYMBOL, Nothing)
 
@@ -53,13 +63,23 @@ Print::Print(ParsedAction s) : print(ParseString(s.second)) {
 void Print::Do(ProgramState* state __attribute__((unused))) {
   std::cout << print;
 }
+std::string Print::Debug() {
+  std::stringstream buffer;
+  buffer << GetActionName(symbol) << "{" << UndoParseString(print) << "}";
+  return buffer.str();
+}
 REGISTER_ACTION("'", Print)
 
 PrintValue::PrintValue(ParsedAction s) {
-  aff = GetAffectedValue(s.first[0]);
+  aff = AffectedValue(s.first[0]);
 }
 void PrintValue::Do(ProgramState* state __attribute__((unused))) {
   std::cout << state->Accumulator();
+}
+std::string PrintValue::Debug() {
+  std::stringstream buffer;
+  buffer << GetActionName(symbol) << "{}";
+  return buffer.str();
 }
 REGISTER_ACTION("p", PrintValue)
 
@@ -69,6 +89,11 @@ Decrement::Decrement(ParsedAction s __attribute__((unused))) {
 void Decrement::Do(ProgramState* state) {
   state->Accumulator()--;
 }
+std::string Decrement::Debug() {
+  std::stringstream buffer;
+  buffer << GetActionName(symbol) << "{}";
+  return buffer.str();
+}
 REGISTER_ACTION("--", Decrement)
 
 
@@ -76,6 +101,11 @@ Assign::Assign(ParsedAction s) : new_val(std::stoi(s.second)) {
 }
 void Assign::Do(ProgramState* state) {
   state->Accumulator() = new_val;
+}
+std::string Assign::Debug() {
+  std::stringstream buffer;
+  buffer << GetActionName(symbol) << "{" << new_val << "}";
+  return buffer.str();
 }
 REGISTER_ACTION("=", Assign)
 
@@ -120,4 +150,8 @@ void ActionBuilder::Register(
   ActionBuilder::action_names.insert(std::make_pair(symbol, name));
   ActionBuilder::action_factories.insert(std::make_pair(name, factory));
   return;
+}
+
+std::string ActionBuilder::ActionName(std::string symbol) {
+  return action_names.at(symbol);
 }

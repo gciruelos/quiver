@@ -19,6 +19,7 @@ enum AffectedValue {
 class Action {
   public:
    virtual void Do(ProgramState* state) = 0;
+   virtual std::string Debug() = 0;
 };
 
 class ActionFactory {
@@ -33,20 +34,28 @@ class Nothing : public Action {
  public:
   Nothing(ParsedAction);
   virtual void Do(ProgramState*);
+  virtual std::string Debug();
+ private:
+  static const std::string symbol;
 };
 
 class Print : public Action {
  public:
   Print(ParsedAction);
   virtual void Do(ProgramState*);
+  virtual std::string Debug();
+ private:
   std::string print;
+  static const std::string symbol;
 };
 
 class PrintValue : public Action {
  public:
   PrintValue(ParsedAction);
   virtual void Do(ProgramState*);
+  virtual std::string Debug();
   AffectedValue aff;
+  static const std::string symbol;
 };
 
 
@@ -54,16 +63,28 @@ class Decrement : public Action {
  public:
   Decrement(ParsedAction);
   virtual void Do(ProgramState*);
-  AffectedValue aff;
+  virtual std::string Debug();
+ private:
+  static const std::string symbol;
 };
 
 class Assign : public Action {
  public:
   Assign(ParsedAction);
   virtual void Do(ProgramState*);
+  virtual std::string Debug();
   uint64_t new_val;
   AffectedValue aff;
+  static const std::string symbol;
 };
+
+
+
+
+
+
+
+
 
 
 class Substract : public Action {
@@ -74,6 +95,7 @@ class Substract : public Action {
   }
   uint64_t value;
   AffectedValue aff;
+  static const std::string symbol;
 };
 
 class Add : public Action {
@@ -84,6 +106,7 @@ class Add : public Action {
   } 
   uint64_t value;
   AffectedValue aff;
+  static const std::string symbol;
 };
 
 
@@ -94,6 +117,7 @@ class Increment : public Action {
     state->Accumulator()++;
   }
   AffectedValue aff;
+  static const std::string symbol;
 };
 
 class MoveTo : public Action {
@@ -110,6 +134,7 @@ class MoveTo : public Action {
   }
  private:
   int test;
+  static const std::string symbol;
 };
 
 
@@ -122,6 +147,7 @@ class ActionBuilder {
       std::string,
       std::string,
       ActionFactory*);
+  std::string ActionName(std::string symbol);
  protected:
   ActionBuilder() { }
  private:

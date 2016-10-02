@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 
+#define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
+
 Program::Program(std::string filename) {
   std::ifstream infile(filename);
   std::string line;
@@ -38,6 +40,15 @@ Program::~Program() {
 }
 
 void Program::ShowParsed() {
+  for (auto& node : nodes_) {
+    std::cout << node << " "
+              << "?" << conditions_.at(node)->Debug() << "?  "
+              << PRINT_END(if_true_.at(node)) << " "
+              << actions_[node][if_true_.at(node)]->Debug() << "  "
+              << PRINT_END(if_false_.at(node)) << " "
+              << actions_[node][if_false_.at(node)]->Debug() << " "
+              << std::endl;
+  }
 }
 
 void Program::Execute() {
