@@ -37,10 +37,13 @@ Program::~Program() {
   }
 }
 
+void Program::ShowParsed() {
+}
+
 void Program::Execute() {
   while (state_->CurrentNode() != end_node) {
     uint64_t current_node = state_->CurrentNode();
-    uint64_t next_node = GetNextNode();
+    state_->NextNode() = GetNextNode();
     /*
     std::cerr << "Current node: " << current_node << "\t"
               << "Next node: " << next_node << "\t"
@@ -48,9 +51,9 @@ void Program::Execute() {
               << "Current node value: " << state_->CurrentNodeValue()
               << std::endl;
     */
-    state_->CurrentNode() = next_node;
+    actions_[current_node][state_->NextNode()]->Do(state_.get());
+    state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
-    actions_[current_node][next_node]->Do(state_.get());
   }
 }
 

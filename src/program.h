@@ -18,6 +18,7 @@ class Program {
   Program(std::string filename);
   ~Program();
   void Execute();
+  void ShowParsed();
  
  private:
   uint64_t GetNextNode();
@@ -28,6 +29,5 @@ class Program {
   std::unordered_map<uint64_t, uint64_t> if_false_;
   std::set<uint64_t> nodes_;
   std::unique_ptr<ProgramState> state_;
-
 };
 #endif

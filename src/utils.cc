@@ -1,16 +1,21 @@
 #include "utils.h"
 
-#include <regex>
+std::string ReplaceAll(
+    std::string str,
+    const std::string& from,
+    const std::string& to) {
+  size_t start_pos = 0;
+  while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length();
+  }
+  return str;
+}
 
 std::string ParseString(std::string input_string) {
-  /*
-  std::regex newline("\\\\n");
-  std::regex parens("\\)");
-  std::string s1, s2;
-  s1 = std::regex_replace(input_string, newline, "\n");
-  s2 = std::regex_replace(s1, parens, ")");
-  */
-  return input_string;
+  return ReplaceAll(
+      ReplaceAll(input_string, "\\n", "\n"),
+      "\\)", ")");
 }
 
 std::string SubstringFrom(std::string str, size_t from) {

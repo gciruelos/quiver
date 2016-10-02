@@ -16,6 +16,29 @@
     }; \
     static klass##Factory global_##klass##Factory;
 
+AffectedValue GetAffectedValue(char indicator) {
+  switch (indicator) {
+    case '[':
+      return CURRENT_NODE;
+    case ']':
+      return NEXT_NODE;
+    default:
+      return ACCUMULATOR;
+  }
+}
+
+uint64_t& GetAffectedNode(ProgramState* state, AffectedValue v) {
+  switch (v) {
+    case CURRENT_NODE:
+      return state->NodeValue(state->CurrentNode());
+    case NEXT_NODE:
+      return state->NodeValue(state->NextNode());
+    default:
+      return state->CurrentNodeValue();
+  }
+}
+
+
 
 Nothing::Nothing(ParsedAction s __attribute__((unused))) {
 }
@@ -25,19 +48,20 @@ void Nothing::Do(ProgramState* state __attribute__((unused))) {
 REGISTER_ACTION(NOTHING_SYMBOL, Nothing)
 
 
-Print::Print(ParsedAction s) : print_(ParseString(s.second)) {
+Print::Print(ParsedAction s) : print(ParseString(s.second)) {
 }
 void Print::Do(ProgramState* state __attribute__((unused))) {
-  std::cout << print_;
+  std::cout << print;
 }
 REGISTER_ACTION("'", Print)
 
-PrintAccumulator::PrintAccumulator(ParsedAction s __attribute__((unused))) {
+PrintValue::PrintValue(ParsedAction s) {
+  aff = GetAffectedValue(s.first[0]);
 }
-void PrintAccumulator::Do(ProgramState* state __attribute__((unused))) {
+void PrintValue::Do(ProgramState* state __attribute__((unused))) {
   std::cout << state->Accumulator();
 }
-REGISTER_ACTION("p", PrintAccumulator)
+REGISTER_ACTION("p", PrintValue)
 
 
 Decrement::Decrement(ParsedAction s __attribute__((unused))) {
@@ -48,10 +72,10 @@ void Decrement::Do(ProgramState* state) {
 REGISTER_ACTION("--", Decrement)
 
 
-Assign::Assign(ParsedAction s) : new_val_(std::stoi(s.second)) {
+Assign::Assign(ParsedAction s) : new_val(std::stoi(s.second)) {
 }
 void Assign::Do(ProgramState* state) {
-  state->Accumulator() = new_val_;
+  state->Accumulator() = new_val;
 }
 REGISTER_ACTION("=", Assign)
 

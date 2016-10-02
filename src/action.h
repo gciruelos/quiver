@@ -10,6 +10,12 @@
 #include "state.h"
 #include "utils.h"
 
+enum AffectedValue {
+  ACCUMULATOR = 1,
+  CURRENT_NODE,
+  NEXT_NODE
+};
+
 class Action {
   public:
    virtual void Do(ProgramState* state) = 0;
@@ -33,14 +39,14 @@ class Print : public Action {
  public:
   Print(ParsedAction);
   virtual void Do(ProgramState*);
- private:
-  std::string print_;
+  std::string print;
 };
 
-class PrintAccumulator : public Action {
+class PrintValue : public Action {
  public:
-  PrintAccumulator(ParsedAction);
+  PrintValue(ParsedAction);
   virtual void Do(ProgramState*);
+  AffectedValue aff;
 };
 
 
@@ -48,35 +54,36 @@ class Decrement : public Action {
  public:
   Decrement(ParsedAction);
   virtual void Do(ProgramState*);
+  AffectedValue aff;
 };
 
 class Assign : public Action {
  public:
   Assign(ParsedAction);
   virtual void Do(ProgramState*);
- private:
-  uint64_t new_val_;
+  uint64_t new_val;
+  AffectedValue aff;
 };
 
 
 class Substract : public Action {
  public:
-  Substract(uint64_t value) : value_(value) {}
+  Substract(uint64_t v) : value(v) {}
   virtual void Do(ProgramState* state) {
-    state->Accumulator() -= value_;
+    state->Accumulator() -= value;
   }
- private:
-  uint64_t value_;
+  uint64_t value;
+  AffectedValue aff;
 };
 
 class Add : public Action {
  public:
-  Add(uint64_t value) : value_(value) {}
+  Add(uint64_t v) : value(v) {}
   virtual void Do(ProgramState* state) {
-    state->Accumulator() += value_;
+    state->Accumulator() += value;
   } 
- private:
-  uint64_t value_;
+  uint64_t value;
+  AffectedValue aff;
 };
 
 
@@ -86,6 +93,7 @@ class Increment : public Action {
   virtual void Do(ProgramState* state) {
     state->Accumulator()++;
   }
+  AffectedValue aff;
 };
 
 class MoveTo : public Action {

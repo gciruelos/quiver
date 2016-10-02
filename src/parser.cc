@@ -20,6 +20,7 @@ LineParser::LineParser(std::string line) {
   std::string action2;
 
   ActionBuilder& action_builder = ActionBuilder::Instance();
+  ConditionBuilder& condition_builder = ConditionBuilder::Instance();
 
   auto line_iter = line.begin();
   while (*line_iter != condition_mark_) {
@@ -56,7 +57,7 @@ LineParser::LineParser(std::string line) {
             << std::endl;
   */
   from_ = ParseNode(from);
-  c_ = std::unique_ptr<Condition>(BuildCondition(condition));
+  c_ = std::unique_ptr<Condition>(condition_builder.BuildCondition(condition));
   if_true_ = std::make_pair(
       ParseNode(to1),
       std::unique_ptr<Action>(action_builder.BuildAction(action1)));

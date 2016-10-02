@@ -1,44 +1,75 @@
 #include "condition.h"
 
+#include "utils.h"
+
+#define EMPTY_SYMBOL "_???"
+
+#define REGISTER_CONDITION(sym,klass) \
+    class klass##Factory : public ConditionFactory { \
+     public: \
+      klass##Factory() { \
+        ConditionBuilder::Instance().Register(sym, #klass, this); \
+      } \
+      virtual Condition* Create(ParsedCondition s) { \
+        return new klass(s); \
+      } \
+    }; \
+    static klass##Factory global_##klass##Factory;
+
+
+Equality::Equality(ParsedCondition s) : value_(std::stoi(s.second)) {
+}
 bool Equality::Check(ProgramState* state) {
   return state->Accumulator() == value_;
 }
+REGISTER_CONDITION("==", Equality)
 
+Greater::Greater(ParsedCondition s) : value_(std::stoi(s.second)) {
+}
 bool Greater::Check(ProgramState* state) {
   return state->Accumulator() > value_;
 }
+REGISTER_CONDITION(">", Greater)
 
+Empty::Empty(ParsedCondition __attribute__((unused))) {
+}
 bool Empty::Check(ProgramState* state __attribute__((unused))) {
   return true;
 }
+REGISTER_CONDITION(EMPTY_SYMBOL, Empty)
 
-std::pair<std::string, std::string> ConsumeOperation(std::string condition) {
-  if (condition.empty()) {
-    return std::make_pair("", "");
-  } else if (condition[0] == '>') {
-    if (condition.size() > 1) {
-      if (condition[1] == '=') {
-        return std::make_pair(
-            ">=", condition.substr(2, condition.size() - 2));
-      } else {
-        return std::make_pair(
-            ">", condition.substr(1, condition.size() - 1));
-      }
-    } else {
-      return std::make_pair("", "");
+std::pair<std::string, std::string> ConditionBuilder::ConsumeCondition(std::string condition) {
+  for (auto& s : symbols) {
+    if (condition.compare(0, s.length(), s) == 0) {
+      return std::make_pair(s, SubstringFrom(condition, s.length())); 
     }
   }
-  return std::make_pair("", "");
+  return std::make_pair(EMPTY_SYMBOL, "");
 }
 
-
-Condition* BuildCondition(std::string condition) {
-  std::pair<std::string, std::string> separated = ConsumeOperation(condition);
-  if (separated.first == "") {
-    return new Empty;
-  } else if (separated.first == ">") {
-    return new Greater(std::stoi(separated.second));
+Condition* ConditionBuilder::BuildCondition(std::string condition) {
+  std::pair<std::string, std::string> separated = ConsumeCondition(condition);
+  for (auto& x : symbols) {
+    if (condition.compare(0, x.length(), x) == 0) {
+      return condition_factories.at(condition_names.at(x))->Create(separated); 
+    }
   }
-  return new Empty;
+  return condition_factories.at(
+      condition_names.at(EMPTY_SYMBOL))->Create(separated);
+}
+
+ConditionBuilder& ConditionBuilder::Instance() {
+  static ConditionBuilder the_instance;
+  return the_instance;
+}
+
+void ConditionBuilder::Register(
+    std::string symbol,
+    std::string name,
+    ConditionFactory* factory) {
+  ConditionBuilder::symbols.insert(symbol);
+  ConditionBuilder::condition_names.insert(std::make_pair(symbol, name));
+  ConditionBuilder::condition_factories.insert(std::make_pair(name, factory));
+  return;
 }
 

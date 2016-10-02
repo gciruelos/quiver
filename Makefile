@@ -4,6 +4,8 @@ CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic -ggdb
 TARGETS = utils.o state.o condition.o action.o parser.o program.o quiver.o
 LIBRARIES = 
 
+.PHONY: clean
+
 all: quiver
 
 %.o: src/%.cc

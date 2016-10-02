@@ -50,3 +50,11 @@ uint64_t& ProgramState::LastNode() {
 uint64_t const & ProgramState::LastNode() const {
   return last_node_;
 }
+
+uint64_t& ProgramState::NextNode() {
+  return next_node_;
+}
+
+uint64_t const & ProgramState::NextNode() const {
+  return next_node_;
+}
