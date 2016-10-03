@@ -54,10 +54,10 @@ class PrintValue : public Action {
   PrintValue(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Debug();
+ private:
   AffectedValue aff;
   static const std::string symbol;
 };
-
 
 class Decrement : public Action {
  public:
@@ -65,6 +65,17 @@ class Decrement : public Action {
   virtual void Do(ProgramState*);
   virtual std::string Debug();
  private:
+  AffectedValue aff;
+  static const std::string symbol;
+};
+
+class Increment : public Action {
+ public:
+  Increment(ParsedAction);
+  virtual void Do(ProgramState*);
+  virtual std::string Debug();
+ private:
+  AffectedValue aff;
   static const std::string symbol;
 };
 
@@ -73,12 +84,20 @@ class Assign : public Action {
   Assign(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Debug();
+ private:
   uint64_t new_val;
   AffectedValue aff;
   static const std::string symbol;
 };
 
-
+class SquigglyMoveTo : public Action {
+ public:
+  SquigglyMoveTo(ParsedAction);
+  virtual void Do(ProgramState*);
+  virtual std::string Debug();
+ private:
+  static const std::string symbol;
+};
 
 
 
@@ -109,16 +128,6 @@ class Add : public Action {
   static const std::string symbol;
 };
 
-
-class Increment : public Action {
- public:
-  Increment() {}
-  virtual void Do(ProgramState* state) {
-    state->Accumulator()++;
-  }
-  AffectedValue aff;
-  static const std::string symbol;
-};
 
 class MoveTo : public Action {
  public:
