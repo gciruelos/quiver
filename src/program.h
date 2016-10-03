@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 
+#include "argv.h"
 #include "condition.h"
 #include "action.h"
 #include "parser.h"
@@ -15,7 +16,7 @@
 
 class Program {
  public:
-  Program(std::string filename);
+  Program(Argv* args);
   ~Program();
   void Execute();
   void ShowParsed();
@@ -23,6 +24,7 @@ class Program {
  private:
   uint64_t GetNextNode();
 
+  Argv* args_;
   std::map<uint64_t, std::map<uint64_t, std::unique_ptr<Action>>> actions_;
   std::map<uint64_t, std::unique_ptr<Condition>> conditions_;
   std::unordered_map<uint64_t, uint64_t> if_true_;

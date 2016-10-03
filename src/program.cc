@@ -8,8 +8,8 @@
 
 #define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
 
-Program::Program(std::string filename) {
-  std::ifstream infile(filename);
+Program::Program(Argv* args) : args_(args){
+  std::ifstream infile(args_->Rest()[0]);
   std::string line;
   while (std::getline(infile, line)) {
     LineParser parser(line);
@@ -27,6 +27,9 @@ Program::Program(std::string filename) {
     nodes_.insert(node);
   }
   state_ = std::unique_ptr<ProgramState>(new ProgramState(nodes_));
+  if (args_->Rest().size() > 1) {
+    state_->Accumulator() = std::stoi(args_->Rest()[1]);
+  }
 }
 
 
@@ -59,14 +62,13 @@ void Program::Execute() {
   while (state_->CurrentNode() != end_node) {
     uint64_t current_node = state_->CurrentNode();
     state_->NextNode() = GetNextNode();
-    /*
-    std::cerr << "Current node: " << current_node << "\t"
-              << "Next node: " << state_->NextNode() << "\t"
-              << "Accumulator value: " << state_->Accumulator() << "\t"
-              << "Current node value: " << state_->CurrentNodeValue()
-              << std::endl;
-    for (uint64_t j_ = 0; j_ < 100000000; j_++);
-    */
+    if (args_->Check("debug")) {
+      std::cerr << "Current node: " << current_node << "\t"
+                << "Next node: " << state_->NextNode() << "\t"
+                << "Accumulator value: " << state_->Accumulator() << "\t"
+                << "Current node value: " << state_->CurrentNodeValue()
+                << std::endl;
+    }
     actions_[current_node][state_->NextNode()]->Do(state_.get());
     state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
