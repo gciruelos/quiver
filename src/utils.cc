@@ -20,7 +20,7 @@ std::string ParseString(std::string input_string) {
 
 std::string UndoParseString(std::string input_string) {
   return ReplaceAll(
-      ReplaceAll(input_string, "\n", "\\n"),
+      ReplaceAll(input_string, "\n", "\\\\n"),
       ")", "\\)");
 }
 

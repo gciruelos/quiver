@@ -5,14 +5,18 @@
 
 #include "utils.h"
 
+#define STRING_CURRENT "current_node"
+#define STRING_NEXT "next_node"
+#define STRING_ACCUMULATOR "accumulator"
+
 std::string IndicatorName(char indicator) {
   switch (indicator) {
     case CURRENT_NODE:
-      return "current node";
+      return STRING_CURRENT;
     case NEXT_NODE:
-      return "next node";
+      return STRING_NEXT;
     default:
-      return "accumulator";
+      return STRING_ACCUMULATOR;
   }
 }
 
@@ -22,11 +26,11 @@ std::string ActionPretty::VisitNothing(
 }
 
 std::string ActionPretty::VisitPrint(Print* print) {
-  return UndoParseString(print->print);
+  return "print('" + UndoParseString(print->print) + "')";
 }
 
 std::string ActionPretty::VisitPrintValue(PrintValue* print_value) {
-  return IndicatorName(print_value->aff);
+  return "print(" + IndicatorName(print_value->aff) + ")";
 }
 
 std::string ActionPretty::VisitDecrement(Decrement* decrement) {
@@ -43,7 +47,7 @@ std::string ActionPretty::VisitAssign(Assign* assign) {
 
 std::string ActionPretty::VisitSquigglyMoveTo(
     SquigglyMoveTo* smt __attribute__((unused))) {
-  return "next node = current node";
+  return std::string(STRING_NEXT) + " = " + std::string(STRING_CURRENT);
 }
 
 
@@ -51,18 +55,18 @@ std::pair<std::string, std::string> PrettyOperands(
     bool rotate_operands, bool arg_is_value, uint64_t value) {
   std::string fst_op, snd_op;
   if (!rotate_operands) {
-    fst_op = "accumulator";
+    fst_op = STRING_ACCUMULATOR;
     if (arg_is_value) {
       snd_op = std::to_string(value);
     } else {
-      snd_op = "current node";
+      snd_op = STRING_CURRENT;
     }
   } else {
-    snd_op = "accumulator";
+    snd_op = STRING_ACCUMULATOR;
     if (arg_is_value) {
       fst_op = std::to_string(value);
     } else {
-      fst_op = "current_node";
+      fst_op = STRING_CURRENT;
     }
   }
   return std::make_pair(fst_op, snd_op);

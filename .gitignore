@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+# Dot files and misc
+test.dot
+test.png
+test.pdf
+test.ps

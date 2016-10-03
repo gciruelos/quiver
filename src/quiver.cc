@@ -1,7 +1,3 @@
-#include <iostream>
-#include <unordered_map>
-#include <cstdint>
-
 #include "argv.h"
 #include "program.h"
 

@@ -2,11 +2,8 @@
 
 #include <fstream>
 
+#include "node.h"
 #include "pretty.h"
-
-std::string Indent(std::string s) {
-  return s;
-}
 
 void GenerateDot(
     std::string filename,
@@ -29,32 +26,38 @@ void GenerateDot(
 
   fout << "digraph quiver {" << std::endl;
   for (uint64_t node : nodes) {
+    std::string cond = conditions.at(node)->Accept(&condition_pretty);
     fout << "n" << node
          << " [label=\""
-         << conditions.at(node)->Accept(&condition_pretty)
+         << (cond == "<empty>" ? "" : cond)
          << "\""
          << (node == min ? " color=blue shape=box" : "")
          << "];" << std::endl;
   }
+  fout << "n" << end_node << "[label=\"END\" shape=box];" << std::endl;
   for (const auto& p : if_true) {
+    std::string a = actions.at(p.first).at(p.second)->Accept(&action_pretty);
     fout << "n" << p.first
          << " -> "
          << "n" << p.second
          << " [label=\""
-         << actions.at(p.first).at(p.second)->Accept(&action_pretty)
+         << (a == "<nothing>" ? "" : a)
          << "\""
          << "color=green"
          << "];" << std::endl;
   }
   for (const auto& p : if_false) {
-    fout << "n" << p.first
-         << " -> "
-         << "n" << p.second
-         << " [label=\""
-         << actions.at(p.first).at(p.second)->Accept(&action_pretty)
-         << "\""
-         << "color=red"
-         << "];" << std::endl;
+    if (conditions.at(p.first)->Accept(&condition_pretty) != "<empty>") { 
+      std::string a = actions.at(p.first).at(p.second)->Accept(&action_pretty);
+      fout << "n" << p.first
+           << " -> "
+           << "n" << p.second
+           << " [label=\""
+           << (a == "<nothing>" ? "" : a)
+           << "\""
+           << "color=red"
+           << "];" << std::endl;
+    }
   }
   fout << "}" << std::endl;
 
