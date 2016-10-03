@@ -29,6 +29,7 @@ class Equality : public Condition {
  private:
   uint64_t value_;
   bool arg_is_value;
+  bool rotate_operands;
   static const std::string symbol;
 };
 
@@ -39,6 +40,32 @@ class Greater : public Condition {
   virtual std::string Debug();
  private:
   uint64_t value_;
+  bool arg_is_value;
+  bool rotate_operands;
+  static const std::string symbol;
+};
+
+class Less : public Condition {
+ public:
+  Less(ParsedCondition);
+  virtual bool Check(ProgramState* state);
+  virtual std::string Debug();
+ private:
+  uint64_t value_;
+  bool arg_is_value;
+  bool rotate_operands;
+  static const std::string symbol;
+};
+
+class Divides : public Condition {
+ public:
+  Divides(ParsedCondition);
+  virtual bool Check(ProgramState* state);
+  virtual std::string Debug();
+ private:
+  uint64_t value_;
+  bool arg_is_value;
+  bool rotate_operands;
   static const std::string symbol;
 };
 

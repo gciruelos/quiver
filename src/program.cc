@@ -57,10 +57,11 @@ void Program::Execute() {
     state_->NextNode() = GetNextNode();
     /*
     std::cerr << "Current node: " << current_node << "\t"
-              << "Next node: " << next_node << "\t"
+              << "Next node: " << state_->NextNode() << "\t"
               << "Accumulator value: " << state_->Accumulator() << "\t"
               << "Current node value: " << state_->CurrentNodeValue()
               << std::endl;
+    for (uint64_t j_ = 0; j_ < 100000000; j_++);
     */
     actions_[current_node][state_->NextNode()]->Do(state_.get());
     state_->CurrentNode() = state_->NextNode();

@@ -47,7 +47,7 @@ uint64_t& AffectedNode(ProgramState* state, AffectedValue v) {
     case NEXT_NODE:
       return state->NodeValue(state->NextNode());
     default:
-      return state->CurrentNodeValue();
+      return state->Accumulator();
   }
 }
 
@@ -183,7 +183,7 @@ Action* ActionBuilder::BuildAction(std::string action) {
   for (auto& x : symbols) {
     if (action.compare(0, x.length(), x) == 0) {
       if (affected == '[' || affected == ']') {
-        separated.first = affected+ separated.first;
+        separated.first = affected + separated.first;
       }
       return action_factories.at(action_names.at(x))->Create(separated); 
     }
