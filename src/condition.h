@@ -3,7 +3,9 @@
 
 #include <cstdint>
 #include <map>
+#include <set>
 #include <string>
+#include <utility>
 
 #include "state.h"
 
@@ -11,9 +13,9 @@ typedef std::pair<std::string, std::string> ParsedCondition;
 
 class ConditionVisitor;
 class Condition {
-  public:
-   virtual bool Check(ProgramState* state) = 0;
-   virtual std::string Accept(ConditionVisitor*) = 0;
+ public:
+  virtual bool Check(ProgramState* state) = 0;
+  virtual std::string Accept(ConditionVisitor*) = 0;
 };
 
 class ConditionFactory {
@@ -24,7 +26,7 @@ class ConditionFactory {
 
 class Equals : public Condition {
  public:
-  Equals(ParsedCondition);
+  explicit Equals(ParsedCondition);
   virtual bool Check(ProgramState* state);
   virtual std::string Accept(ConditionVisitor*);
 
@@ -36,7 +38,7 @@ class Equals : public Condition {
 
 class Greater : public Condition {
  public:
-  Greater(ParsedCondition);
+  explicit Greater(ParsedCondition);
   virtual bool Check(ProgramState* state);
   virtual std::string Accept(ConditionVisitor*);
 
@@ -48,7 +50,7 @@ class Greater : public Condition {
 
 class Less : public Condition {
  public:
-  Less(ParsedCondition);
+  explicit Less(ParsedCondition);
   virtual bool Check(ProgramState* state);
   virtual std::string Accept(ConditionVisitor*);
 
@@ -60,7 +62,7 @@ class Less : public Condition {
 
 class Divides : public Condition {
  public:
-  Divides(ParsedCondition);
+  explicit Divides(ParsedCondition);
   virtual bool Check(ProgramState* state);
   virtual std::string Accept(ConditionVisitor*);
 
@@ -72,7 +74,7 @@ class Divides : public Condition {
 
 class Empty : public Condition {
  public:
-  Empty(ParsedCondition);
+  explicit Empty(ParsedCondition);
   virtual bool Check(ProgramState* state);
   virtual std::string Accept(ConditionVisitor*);
 

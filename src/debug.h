@@ -1,6 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <string>
+
 #include "action.h"
 #include "condition.h"
 #include "pretty.h"

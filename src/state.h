@@ -1,13 +1,13 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <unordered_map>
 #include <cstdint>
 #include <set>
+#include <unordered_map>
 
 class ProgramState {
  public:
-  ProgramState(std::set<uint64_t> nodes);
+  explicit ProgramState(std::set<uint64_t> nodes);
 
   uint64_t& Accumulator();
   uint64_t const& Accumulator() const;
@@ -23,7 +23,7 @@ class ProgramState {
 
   uint64_t& LastNode();
   uint64_t const& LastNode() const;
-  
+
   uint64_t& NextNode();
   uint64_t const& NextNode() const;
 

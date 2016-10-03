@@ -2,10 +2,11 @@
 
 #include <string>
 #include <sstream>
+#include <utility>
 
 #define NOTHING_SYMBOL "_???"
 
-#define REGISTER_ACTION(sym_,klass) \
+#define REGISTER_ACTION(sym_, klass) \
     const std::string klass::symbol = sym_; \
     class klass##Factory : public ActionFactory { \
      public: \
@@ -128,7 +129,7 @@ std::pair<std::string, std::string> ActionBuilder::ConsumeAction(
     std::string action) {
   for (auto& s : symbols) {
     if (action.compare(0, s.length(), s) == 0) {
-      return std::make_pair(s, SubstringFrom(action, s.length())); 
+      return std::make_pair(s, SubstringFrom(action, s.length()));
     }
   }
   return std::make_pair(NOTHING_SYMBOL, "");
@@ -155,10 +156,11 @@ Action* ActionBuilder::BuildAction(std::string action) {
       if (affected == '[' || affected == ']') {
         separated.first = affected + separated.first;
       }
-      return action_factories.at(action_names.at(x))->Create(separated); 
+      return action_factories.at(action_names.at(x))->Create(separated);
     }
   }
-  return action_factories.at(action_names.at(NOTHING_SYMBOL))->Create(separated);
+  return action_factories.at(
+      action_names.at(NOTHING_SYMBOL))->Create(separated);
 }
 
 ActionBuilder& ActionBuilder::Instance() {

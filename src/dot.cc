@@ -47,7 +47,7 @@ void GenerateDot(
          << "];" << std::endl;
   }
   for (const auto& p : if_false) {
-    if (conditions.at(p.first)->Accept(&condition_pretty) != "<empty>") { 
+    if (conditions.at(p.first)->Accept(&condition_pretty) != "<empty>") {
       std::string a = actions.at(p.first).at(p.second)->Accept(&action_pretty);
       fout << "n" << p.first
            << " -> "
@@ -60,7 +60,5 @@ void GenerateDot(
     }
   }
   fout << "}" << std::endl;
-
 }
-
 

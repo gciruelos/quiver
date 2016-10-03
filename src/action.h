@@ -6,6 +6,8 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include <set>
+#include <utility>
 
 #include "state.h"
 #include "utils.h"
@@ -20,22 +22,22 @@ enum AffectedValue {
 class ActionVisitor;
 
 class Action {
-  public:
-   virtual void Do(ProgramState* state) = 0;
-   virtual std::string Accept(ActionVisitor*) = 0;
+ public:
+  virtual void Do(ProgramState* state) = 0;
+  virtual std::string Accept(ActionVisitor*) = 0;
 };
 
 class ActionFactory {
  public:
   virtual Action* Create(std::pair<std::string, std::string>) = 0;
 };
-  
+
 typedef std::pair<std::string, std::string> ParsedAction;
 
 
 class Nothing : public Action {
  public:
-  Nothing(ParsedAction);
+  explicit Nothing(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -44,7 +46,7 @@ class Nothing : public Action {
 
 class Print : public Action {
  public:
-  Print(ParsedAction);
+  explicit Print(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -54,7 +56,7 @@ class Print : public Action {
 
 class PrintValue : public Action {
  public:
-  PrintValue(ParsedAction);
+  explicit PrintValue(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -64,7 +66,7 @@ class PrintValue : public Action {
 
 class Decrement : public Action {
  public:
-  Decrement(ParsedAction);
+  explicit Decrement(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -74,7 +76,7 @@ class Decrement : public Action {
 
 class Increment : public Action {
  public:
-  Increment(ParsedAction);
+  explicit Increment(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -84,7 +86,7 @@ class Increment : public Action {
 
 class Assign : public Action {
  public:
-  Assign(ParsedAction);
+  explicit Assign(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 
@@ -95,7 +97,7 @@ class Assign : public Action {
 
 class SquigglyMoveTo : public Action {
  public:
-  SquigglyMoveTo(ParsedAction);
+  explicit SquigglyMoveTo(ParsedAction);
   virtual void Do(ProgramState*);
   virtual std::string Accept(ActionVisitor*);
 

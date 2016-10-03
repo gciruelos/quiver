@@ -1,6 +1,8 @@
 #ifndef PRETTY_H
 #define PRETTY_H
 
+#include <string>
+
 #include "action.h"
 #include "condition.h"
 

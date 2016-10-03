@@ -2,12 +2,13 @@
 
 #include <sstream>
 #include <iostream>
+#include <utility>
 
 #include "utils.h"
 
 #define EMPTY_SYMBOL "_???"
 
-#define REGISTER_CONDITION(sym_,klass) \
+#define REGISTER_CONDITION(sym_, klass) \
     const std::string klass::symbol = sym_; \
     class klass##Factory : public ConditionFactory { \
      public: \
@@ -123,7 +124,7 @@ REGISTER_CONDITION(EMPTY_SYMBOL, Empty)
 ParsedCondition ConditionBuilder::ConsumeCondition(std::string condition) {
   for (auto& s : symbols) {
     if (condition.compare(0, s.length(), s) == 0) {
-      return std::make_pair(s, SubstringFrom(condition, s.length())); 
+      return std::make_pair(s, SubstringFrom(condition, s.length()));
     }
   }
   return std::make_pair(EMPTY_SYMBOL, "");
@@ -141,7 +142,7 @@ Condition* ConditionBuilder::BuildCondition(std::string condition) {
       if (affected == '@') {
         separated.first = affected + separated.first;
       }
-      return condition_factories.at(condition_names.at(x))->Create(separated); 
+      return condition_factories.at(condition_names.at(x))->Create(separated);
     }
   }
   return condition_factories.at(
@@ -162,7 +163,6 @@ void ConditionBuilder::Register(
   ConditionBuilder::symbols.insert(symbol);
   ConditionBuilder::condition_names.insert(std::make_pair(symbol, name));
   ConditionBuilder::condition_factories.insert(std::make_pair(name, factory));
-  return;
 }
 
 

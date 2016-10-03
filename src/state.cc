@@ -1,6 +1,7 @@
 #include "state.h"
 
 #include <algorithm>
+#include <utility>
 
 ProgramState::ProgramState(std::set<uint64_t> nodes)
   : accumulator_(0),

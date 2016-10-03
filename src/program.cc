@@ -3,13 +3,14 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <utility>
 
 #include "debug.h"
 #include "dot.h"
 
 #define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
 
-Program::Program(Argv* args) : args_(args){
+Program::Program(Argv* args) : args_(args) {
   std::ifstream infile(args_->Rest()[0]);
   std::string line;
   while (std::getline(infile, line)) {
@@ -46,15 +47,17 @@ Program::~Program() {
 }
 
 void Program::ShowParsed() {
-  ActionDebug action_debug; 
-  ConditionDebug condition_debug; 
+  ActionDebug action_debug;
+  ConditionDebug condition_debug;
   for (auto& node : nodes_) {
     std::cout << node << " "
               << "?" << conditions_.at(node)->Accept(&condition_debug) << "?  "
               << PRINT_END(if_true_.at(node)) << " "
-              << actions_[node][if_true_.at(node)]->Accept(&action_debug) << "  "
+              << actions_[node][if_true_.at(node)]->Accept(&action_debug)
+              << "  "
               << PRINT_END(if_false_.at(node)) << " "
-              << actions_[node][if_false_.at(node)]->Accept(&action_debug) << " "
+              << actions_[node][if_false_.at(node)]->Accept(&action_debug)
+              << " "
               << std::endl;
   }
 }

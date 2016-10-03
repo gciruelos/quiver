@@ -1,7 +1,7 @@
 #include "parser.h"
+
 #include <iostream>
-
-
+#include <utility>
 
 uint64_t LineParser::ParseNode(std::string node) {
   if (node.size() == 0) {
@@ -64,7 +64,6 @@ LineParser::LineParser(std::string line) {
   if_false_ = std::make_pair(
       ParseNode(to2),
       std::unique_ptr<Action>(action_builder.BuildAction(action2)));
-
 }
 
 uint64_t LineParser::GetNode() const {

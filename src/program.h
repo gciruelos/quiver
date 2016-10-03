@@ -16,12 +16,12 @@
 
 class Program {
  public:
-  Program(Argv* args);
+  explicit Program(Argv* args);
   ~Program();
   void Execute();
   void ShowParsed();
   void Dot();
- 
+
  private:
   uint64_t GetNextNode();
 
