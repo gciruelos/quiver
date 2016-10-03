@@ -9,10 +9,11 @@
 
 typedef std::pair<std::string, std::string> ParsedCondition;
 
+class ConditionVisitor;
 class Condition {
   public:
    virtual bool Check(ProgramState* state) = 0;
-   virtual std::string Debug() = 0;
+   virtual std::string Accept(ConditionVisitor*) = 0;
 };
 
 class ConditionFactory {
@@ -21,12 +22,12 @@ class ConditionFactory {
 };
 
 
-class Equality : public Condition {
+class Equals : public Condition {
  public:
-  Equality(ParsedCondition);
+  Equals(ParsedCondition);
   virtual bool Check(ProgramState* state);
-  virtual std::string Debug();
- private:
+  virtual std::string Accept(ConditionVisitor*);
+
   uint64_t value_;
   bool arg_is_value;
   bool rotate_operands;
@@ -37,8 +38,8 @@ class Greater : public Condition {
  public:
   Greater(ParsedCondition);
   virtual bool Check(ProgramState* state);
-  virtual std::string Debug();
- private:
+  virtual std::string Accept(ConditionVisitor*);
+
   uint64_t value_;
   bool arg_is_value;
   bool rotate_operands;
@@ -49,8 +50,8 @@ class Less : public Condition {
  public:
   Less(ParsedCondition);
   virtual bool Check(ProgramState* state);
-  virtual std::string Debug();
- private:
+  virtual std::string Accept(ConditionVisitor*);
+
   uint64_t value_;
   bool arg_is_value;
   bool rotate_operands;
@@ -61,8 +62,8 @@ class Divides : public Condition {
  public:
   Divides(ParsedCondition);
   virtual bool Check(ProgramState* state);
-  virtual std::string Debug();
- private:
+  virtual std::string Accept(ConditionVisitor*);
+
   uint64_t value_;
   bool arg_is_value;
   bool rotate_operands;
@@ -73,9 +74,18 @@ class Empty : public Condition {
  public:
   Empty(ParsedCondition);
   virtual bool Check(ProgramState* state);
-  virtual std::string Debug();
- private:
+  virtual std::string Accept(ConditionVisitor*);
+
   static const std::string symbol;
+};
+
+class ConditionVisitor {
+ public:
+  virtual std::string VisitEmpty(Empty*) = 0;
+  virtual std::string VisitEquals(Equals*) = 0;
+  virtual std::string VisitGreater(Greater*) = 0;
+  virtual std::string VisitLess(Less*) = 0;
+  virtual std::string VisitDivides(Divides*) = 0;
 };
 
 class ConditionBuilder {

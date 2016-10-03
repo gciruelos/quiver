@@ -20,10 +20,6 @@
     }; \
     static klass##Factory global_##klass##Factory;
 
-std::string GetConditionName(std::string symbol) {
-  return ConditionBuilder::Instance().ConditionName(symbol);
-}
-
 void InitializeValue(const ParsedCondition& s,
     bool* arg_is_value, uint64_t* value, bool* rotate_operands) {
   *rotate_operands = (s.first[0] == '@');
@@ -33,17 +29,6 @@ void InitializeValue(const ParsedCondition& s,
     *value = std::stoi(s.second);
     *arg_is_value = true;
   }
-}
-
-std::string ConditionDebugString(std::string symbol, uint64_t value,
-    bool arg_is_value, bool rotate_operands) {
-  std::stringstream buffer;
-  buffer << GetConditionName(symbol)
-         << "{"
-         << (arg_is_value ? std::to_string(value) : "curr")
-         << (rotate_operands ? "(@)" : "")
-         << "}";
-  return buffer.str();
 }
 
 std::pair<uint64_t, uint64_t> Operands(bool rotate_operands, bool arg_is_value,
@@ -68,18 +53,18 @@ std::pair<uint64_t, uint64_t> Operands(bool rotate_operands, bool arg_is_value,
 }
 
 
-Equality::Equality(ParsedCondition s) {
+Equals::Equals(ParsedCondition s) {
   InitializeValue(s, &arg_is_value, &value_, &rotate_operands);
 }
-bool Equality::Check(ProgramState* state) {
+bool Equals::Check(ProgramState* state) {
   std::pair<uint64_t, uint64_t> operands(Operands(
         rotate_operands, arg_is_value, value_, state));
   return operands.first == operands.second;
 }
-std::string Equality::Debug() {
-  return ConditionDebugString(symbol, value_, arg_is_value, rotate_operands);
+std::string Equals::Accept(ConditionVisitor* visitor) {
+  return visitor->VisitEquals(this);
 }
-REGISTER_CONDITION("==", Equality)
+REGISTER_CONDITION("==", Equals)
 
 
 Greater::Greater(ParsedCondition s) {
@@ -90,10 +75,11 @@ bool Greater::Check(ProgramState* state) {
         rotate_operands, arg_is_value, value_, state));
   return operands.first > operands.second;
 }
-std::string Greater::Debug() {
-  return ConditionDebugString(symbol, value_, arg_is_value, rotate_operands);
+std::string Greater::Accept(ConditionVisitor* visitor) {
+  return visitor->VisitGreater(this);
 }
 REGISTER_CONDITION(">", Greater)
+
 
 Less::Less(ParsedCondition s) {
   InitializeValue(s, &arg_is_value, &value_, &rotate_operands);
@@ -103,10 +89,11 @@ bool Less::Check(ProgramState* state) {
         rotate_operands, arg_is_value, value_, state));
   return operands.first < operands.second;
 }
-std::string Less::Debug() {
-  return ConditionDebugString(symbol, value_, arg_is_value, rotate_operands);
+std::string Less::Accept(ConditionVisitor* visitor) {
+  return visitor->VisitLess(this);
 }
 REGISTER_CONDITION("<", Less)
+
 
 Divides::Divides(ParsedCondition s) {
   InitializeValue(s, &arg_is_value, &value_, &rotate_operands);
@@ -116,8 +103,8 @@ bool Divides::Check(ProgramState* state) {
         rotate_operands, arg_is_value, value_, state));
   return (operands.second % operands.first) == 0;
 }
-std::string Divides::Debug() {
-  return ConditionDebugString(symbol, value_, arg_is_value, rotate_operands);
+std::string Divides::Accept(ConditionVisitor* visitor) {
+  return visitor->VisitDivides(this);
 }
 REGISTER_CONDITION("|", Divides)
 
@@ -127,15 +114,13 @@ Empty::Empty(ParsedCondition __attribute__((unused))) {
 bool Empty::Check(ProgramState* state __attribute__((unused))) {
   return true;
 }
-std::string Empty::Debug() {
-  std::stringstream buffer;
-  buffer << GetConditionName(symbol);
-  return buffer.str();
+std::string Empty::Accept(ConditionVisitor* visitor) {
+  return visitor->VisitEmpty(this);
 }
 REGISTER_CONDITION(EMPTY_SYMBOL, Empty)
 
 
-std::pair<std::string, std::string> ConditionBuilder::ConsumeCondition(std::string condition) {
+ParsedCondition ConditionBuilder::ConsumeCondition(std::string condition) {
   for (auto& s : symbols) {
     if (condition.compare(0, s.length(), s) == 0) {
       return std::make_pair(s, SubstringFrom(condition, s.length())); 
@@ -143,6 +128,7 @@ std::pair<std::string, std::string> ConditionBuilder::ConsumeCondition(std::stri
   }
   return std::make_pair(EMPTY_SYMBOL, "");
 }
+
 
 Condition* ConditionBuilder::BuildCondition(std::string condition) {
   std::pair<std::string, std::string> separated = ConsumeCondition(condition);
@@ -162,10 +148,12 @@ Condition* ConditionBuilder::BuildCondition(std::string condition) {
       condition_names.at(EMPTY_SYMBOL))->Create(separated);
 }
 
+
 ConditionBuilder& ConditionBuilder::Instance() {
   static ConditionBuilder the_instance;
   return the_instance;
 }
+
 
 void ConditionBuilder::Register(
     std::string symbol,
@@ -176,6 +164,7 @@ void ConditionBuilder::Register(
   ConditionBuilder::condition_factories.insert(std::make_pair(name, factory));
   return;
 }
+
 
 std::string ConditionBuilder::ConditionName(std::string symbol) {
   return condition_names.at(symbol);

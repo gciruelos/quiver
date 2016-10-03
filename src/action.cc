@@ -29,17 +29,6 @@ AffectedValue GetAffectedValue(char indicator) {
   }
 }
 
-std::string IndicatorName(char indicator) {
-  switch (indicator) {
-    case CURRENT_NODE:
-      return "current node";
-    case NEXT_NODE:
-      return "next node";
-    default:
-      return "accumulator";
-  }
-}
-
 uint64_t& AffectedNode(ProgramState* state, AffectedValue v) {
   switch (v) {
     case CURRENT_NODE:
@@ -51,20 +40,14 @@ uint64_t& AffectedNode(ProgramState* state, AffectedValue v) {
   }
 }
 
-std::string GetActionName(std::string symbol) {
-  return ActionBuilder::Instance().ActionName(symbol);
-}
-
 
 Nothing::Nothing(ParsedAction s __attribute__((unused))) {
 }
 void Nothing::Do(ProgramState* state __attribute__((unused))) {
   return;
 }
-std::string Nothing::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol);
-  return buffer.str();
+std::string Nothing::Accept(ActionVisitor* visitor) {
+  return visitor->VisitNothing(this);
 }
 REGISTER_ACTION(NOTHING_SYMBOL, Nothing)
 
@@ -74,10 +57,8 @@ Print::Print(ParsedAction s) : print(ParseString(s.second)) {
 void Print::Do(ProgramState* state __attribute__((unused))) {
   std::cout << print;
 }
-std::string Print::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol) << "{" << UndoParseString(print) << "}";
-  return buffer.str();
+std::string Print::Accept(ActionVisitor* visitor) {
+  return visitor->VisitPrint(this);
 }
 REGISTER_ACTION("'", Print)
 
@@ -88,10 +69,8 @@ PrintValue::PrintValue(ParsedAction s) {
 void PrintValue::Do(ProgramState* state) {
   std::cout << AffectedNode(state, aff);
 }
-std::string PrintValue::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol) << "{" << IndicatorName(aff) << "}";
-  return buffer.str();
+std::string PrintValue::Accept(ActionVisitor* visitor) {
+  return visitor->VisitPrintValue(this);
 }
 REGISTER_ACTION("p", PrintValue)
 
@@ -102,10 +81,8 @@ Decrement::Decrement(ParsedAction s) {
 void Decrement::Do(ProgramState* state) {
   AffectedNode(state, aff)--;
 }
-std::string Decrement::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol) << "{" << IndicatorName(aff) << "}";
-  return buffer.str();
+std::string Decrement::Accept(ActionVisitor* visitor) {
+  return visitor->VisitDecrement(this);
 }
 REGISTER_ACTION("--", Decrement)
 
@@ -116,10 +93,8 @@ Increment::Increment(ParsedAction s) {
 void Increment::Do(ProgramState* state) {
   AffectedNode(state, aff)++;
 }
-std::string Increment::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol) << "{" << IndicatorName(aff) << "}";
-  return buffer.str();
+std::string Increment::Accept(ActionVisitor* visitor) {
+  return visitor->VisitIncrement(this);
 }
 REGISTER_ACTION("++", Increment)
 
@@ -130,11 +105,8 @@ Assign::Assign(ParsedAction s) : new_val(std::stoi(s.second)) {
 void Assign::Do(ProgramState* state) {
   AffectedNode(state, aff) = new_val;
 }
-std::string Assign::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol) << "{"
-         << IndicatorName(aff) << " = " << new_val << "}";
-  return buffer.str();
+std::string Assign::Accept(ActionVisitor* visitor) {
+  return visitor->VisitAssign(this);
 }
 REGISTER_ACTION("=", Assign)
 
@@ -144,10 +116,8 @@ SquigglyMoveTo::SquigglyMoveTo(ParsedAction s __attribute__((unused))) {
 void SquigglyMoveTo::Do(ProgramState* state) {
   state->NodeValue(state->NextNode()) = state->CurrentNodeValue();
 }
-std::string SquigglyMoveTo::Debug() {
-  std::stringstream buffer;
-  buffer << GetActionName(symbol);
-  return buffer.str();
+std::string SquigglyMoveTo::Accept(ActionVisitor* visitor) {
+  return visitor->VisitSquigglyMoveTo(this);
 }
 REGISTER_ACTION("~>", SquigglyMoveTo)
 

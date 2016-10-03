@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 
+#include "debug.h"
+
 #define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
 
 Program::Program(std::string filename) {
@@ -40,13 +42,15 @@ Program::~Program() {
 }
 
 void Program::ShowParsed() {
+  ActionDebug action_debug; 
+  ConditionDebug condition_debug; 
   for (auto& node : nodes_) {
     std::cout << node << " "
-              << "?" << conditions_.at(node)->Debug() << "?  "
+              << "?" << conditions_.at(node)->Accept(&condition_debug) << "?  "
               << PRINT_END(if_true_.at(node)) << " "
-              << actions_[node][if_true_.at(node)]->Debug() << "  "
+              << actions_[node][if_true_.at(node)]->Accept(&action_debug) << "  "
               << PRINT_END(if_false_.at(node)) << " "
-              << actions_[node][if_false_.at(node)]->Debug() << " "
+              << actions_[node][if_false_.at(node)]->Accept(&action_debug) << " "
               << std::endl;
   }
 }
