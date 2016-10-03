@@ -22,6 +22,8 @@ int main(int argc, char** argv) {
       return 0;
     }
     p.Execute();
+  } else {
+    args.Help();
   }
   return 0;
 }

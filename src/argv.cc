@@ -32,7 +32,7 @@ char Argv::BigsFiber(std::string big) {
 
 void Argv::Help() {
   std::cerr << "Usage: " << program_name_
-            << " [options] program.quiv <initial accumulator value>"
+            << " [options] program.quiv [initial accumulator value]"
             << std::endl;
   std::cerr << "Options:" << std::endl;
   for (const auto& desc : descriptions_) {

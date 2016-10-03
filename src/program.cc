@@ -80,7 +80,7 @@ void Program::Execute() {
 }
 
 void Program::Dot() {
-  GenerateDot("test.dot", nodes_, actions_, conditions_, if_true_, if_false_);
+  GenerateDot("graph.dot", nodes_, actions_, conditions_, if_true_, if_false_);
 }
 
 uint64_t Program::GetNextNode() {
