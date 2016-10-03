@@ -13,7 +13,7 @@ Programs in Quiver are directed graphs (digraphs), where
 * Vertices are conditions, and
 * Edges are side effects.
 
-The program will flow through that graph, jumping from vertex to vertex. Each vertex has two outgoing edges, one will be followed if the condition in the vertex is true, the other if the condition is false.
+The execution will flow through that graph, jumping from vertex to vertex. Each vertex has two outgoing edges, one will be followed if the condition in the vertex is true, the other if the condition is false.
 
 A program in Quiver is a list of nodes. Each node has 
 
@@ -40,7 +40,7 @@ A program in Quiver is just a list of nodes. Let's see an example.
 0??('Hello, World!\n)()
 ```
 
-That is "Hello, World!" in Quiver. It starts in 0. The empty condition evaluates to True, so it jumps to the halt node, writing "Hello, World!" to the screen. Not that there's only one `'`.
+That is "Hello, World!" in Quiver. It starts in 0. The empty condition evaluates to True, so it jumps to the halt node, writing "Hello, World!" to the screen. Note that there's only one `'`.
 
 State
 -----
