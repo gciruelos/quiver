@@ -1,11 +1,10 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef PRETTY_H
+#define PRETTY_H
 
 #include "action.h"
 #include "condition.h"
-#include "pretty.h"
 
-class ActionDebug : public ActionVisitor {
+class ActionPretty : public ActionVisitor {
  public:
   virtual std::string VisitNothing(Nothing*);
   virtual std::string VisitPrint(Print*);
@@ -14,19 +13,15 @@ class ActionDebug : public ActionVisitor {
   virtual std::string VisitIncrement(Increment*);
   virtual std::string VisitAssign(Assign*);
   virtual std::string VisitSquigglyMoveTo(SquigglyMoveTo*);
- private:
-  ActionPretty pretty_;
 };
 
-class ConditionDebug : public ConditionVisitor {
+class ConditionPretty : public ConditionVisitor {
  public:
   virtual std::string VisitEmpty(Empty*);
   virtual std::string VisitEquals(Equals*);
   virtual std::string VisitGreater(Greater*);
   virtual std::string VisitLess(Less*);
   virtual std::string VisitDivides(Divides*);
- private:
-  ConditionPretty pretty_;
 };
 
 #endif
