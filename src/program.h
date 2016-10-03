@@ -20,6 +20,7 @@ class Program {
   ~Program();
   void Execute();
   void ShowParsed();
+  void Dot();
  
  private:
   uint64_t GetNextNode();

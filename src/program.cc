@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "debug.h"
+#include "dot.h"
 
 #define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
 
@@ -73,6 +74,10 @@ void Program::Execute() {
     state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
   }
+}
+
+void Program::Dot() {
+  GenerateDot("test.dot", nodes_, actions_, conditions_, if_true_, if_false_);
 }
 
 uint64_t Program::GetNextNode() {

@@ -5,7 +5,7 @@ CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic
 LFLAGS =
 SRC_DIR = src/
 OBJ_DIR = obj/
-OBJS = utils.o state.o condition.o action.o parser.o program.o quiver.o debug.o pretty.o argv.o
+OBJS = utils.o state.o condition.o action.o parser.o program.o quiver.o debug.o pretty.o argv.o dot.o
 EXECUTABLE = quiver
 
 .PHONY: all clean debug

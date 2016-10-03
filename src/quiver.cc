@@ -21,6 +21,10 @@ int main(int argc, char** argv) {
     if (args.Check("parsed")) {
       p.ShowParsed();
     }
+    if (args.Check("dot")) {
+      p.Dot();
+      return 0;
+    }
     p.Execute();
   }
   return 0;
