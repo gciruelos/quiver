@@ -93,6 +93,7 @@ Let's look at more advanced stuff. The following program outputs all prime numbe
 ```
 
 What does this do?
+
 1. It assigns 2 to the accumulator and jumps to 2.
 
 2. It compares the accumulator with 100, if it is 100 or more, it halts, if it is less it goes to three. `]=2` means that it assigns 2 (`=2`) to the value of the next node, i.e. 3. To assign to the current node (2) you have to do `[`.
