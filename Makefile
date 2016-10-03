@@ -12,7 +12,6 @@ MKDIR_P = mkdir -p
 
 .PHONY: all clean debug
 
-
 all: $(OBJ_DIR) $(EXECUTABLE)
 
 clean:
