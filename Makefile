@@ -5,12 +5,15 @@ CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic
 LFLAGS =
 SRC_DIR = src/
 OBJ_DIR = obj/
-OBJS = utils.o state.o condition.o action.o parser.o program.o quiver.o debug.o pretty.o argv.o dot.o
+SRCS = $(wildcard $(SRC_DIR)*.cc)
+OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.cc=.o)))
 EXECUTABLE = quiver
+MKDIR_P = mkdir -p
 
 .PHONY: all clean debug
 
-all: $(EXECUTABLE)
+
+all: $(OBJ_DIR) $(EXECUTABLE)
 
 clean:
 	rm -f $(OBJS) $(EXECUTABLE)
@@ -18,7 +21,10 @@ clean:
 debug: OPT_FLAGS=-ggdb
 debug: all
 
-%.o: $(SRC_DIR)%.cc
+$(OBJ_DIR):
+	${MKDIR_P} $@
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.cc
 	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
 
 $(EXECUTABLE): $(OBJS)

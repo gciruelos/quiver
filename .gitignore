@@ -29,9 +29,9 @@
 *.app
 
 # Dot files and misc
-test.dot
-test.png
-test.pdf
-test.ps
+graph.dot
+graph.png
+graph.pdf
+graph.ps
 
 quiver
