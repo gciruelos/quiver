@@ -15,19 +15,19 @@ class ConditionVisitor;
 class Condition {
  public:
   virtual bool Check(ProgramState* state) = 0;
-  virtual std::string Accept(ConditionVisitor*) = 0;
+  virtual std::string Accept(ConditionVisitor* visitor) = 0;
 };
 
 class ConditionFactory {
  public:
-  virtual Condition* Create(std::pair<std::string, std::string>) = 0;
+  virtual Condition* Create(ParsedCondition condition) = 0;
 };
 
 
 class Equals : public Condition {
  public:
   explicit Equals(ParsedCondition);
-  virtual bool Check(ProgramState* state);
+  virtual bool Check(ProgramState*);
   virtual std::string Accept(ConditionVisitor*);
 
   uint64_t value_;
@@ -39,7 +39,7 @@ class Equals : public Condition {
 class Greater : public Condition {
  public:
   explicit Greater(ParsedCondition);
-  virtual bool Check(ProgramState* state);
+  virtual bool Check(ProgramState*);
   virtual std::string Accept(ConditionVisitor*);
 
   uint64_t value_;
@@ -51,7 +51,7 @@ class Greater : public Condition {
 class Less : public Condition {
  public:
   explicit Less(ParsedCondition);
-  virtual bool Check(ProgramState* state);
+  virtual bool Check(ProgramState*);
   virtual std::string Accept(ConditionVisitor*);
 
   uint64_t value_;
@@ -63,7 +63,7 @@ class Less : public Condition {
 class Divides : public Condition {
  public:
   explicit Divides(ParsedCondition);
-  virtual bool Check(ProgramState* state);
+  virtual bool Check(ProgramState*);
   virtual std::string Accept(ConditionVisitor*);
 
   uint64_t value_;
@@ -75,7 +75,7 @@ class Divides : public Condition {
 class Empty : public Condition {
  public:
   explicit Empty(ParsedCondition);
-  virtual bool Check(ProgramState* state);
+  virtual bool Check(ProgramState*);
   virtual std::string Accept(ConditionVisitor*);
 
   static const std::string symbol;
@@ -102,7 +102,7 @@ class ConditionBuilder {
  protected:
   ConditionBuilder() { }
  private:
-  std::pair<std::string, std::string> ConsumeCondition(std::string action);
+  ParsedCondition ConsumeCondition(std::string action);
   std::set<std::string> symbols;
   std::map<std::string, ConditionFactory*> condition_factories;
   std::map<std::string, std::string> condition_names;

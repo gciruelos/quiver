@@ -132,7 +132,7 @@ ParsedCondition ConditionBuilder::ConsumeCondition(std::string condition) {
 
 
 Condition* ConditionBuilder::BuildCondition(std::string condition) {
-  std::pair<std::string, std::string> separated = ConsumeCondition(condition);
+  ParsedCondition separated = ConsumeCondition(condition);
   char affected = condition[0];
   if (affected == '@') {
     condition.erase(0, 1);

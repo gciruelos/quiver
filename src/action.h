@@ -18,21 +18,20 @@ enum AffectedValue {
   NEXT_NODE
 };
 
+typedef std::pair<std::string, std::string> ParsedAction;
 
 class ActionVisitor;
 
 class Action {
  public:
   virtual void Do(ProgramState* state) = 0;
-  virtual std::string Accept(ActionVisitor*) = 0;
+  virtual std::string Accept(ActionVisitor* visitor) = 0;
 };
 
 class ActionFactory {
  public:
-  virtual Action* Create(std::pair<std::string, std::string>) = 0;
+  virtual Action* Create(ParsedAction) = 0;
 };
-
-typedef std::pair<std::string, std::string> ParsedAction;
 
 
 class Nothing : public Action {
@@ -130,7 +129,7 @@ class ActionBuilder {
  protected:
   ActionBuilder() { }
  private:
-  std::pair<std::string, std::string> ConsumeAction(std::string action);
+  ParsedAction ConsumeAction(std::string action);
   std::set<std::string> symbols;
   std::map<std::string, ActionFactory*> action_factories;
   std::map<std::string, std::string> action_names;
