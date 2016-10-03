@@ -61,9 +61,13 @@ Let's see an example of that being used, a program that outputs the numbers from
 ```
 
 Let's see what happens:
+
 1. It starts in node 0 and jumps to 1. The action `(1)` means just assign 1 to the accumulator.
+
 2. In node 1, if the accumulator is greater than or equal to 11, it halts. If it is less, it jumps to 2, and you print it (that is what `p` does, it prints the accumulator).
+
 3. It prints `\n` and jumps to 3.
+
 4. It jumps to 1 and increments the accumulator.
 
 ![1to10.quiv Graph](img/1to10.png)
@@ -90,11 +94,17 @@ Let's look at more advanced stuff. The following program outputs all prime numbe
 
 What does this do?
 1. It assigns 2 to the accumulator and jumps to 2.
+
 2. It compares the accumulator with 100, if it is 100 or more, it halts, if it is less it goes to three. `]=2` means that it assigns 2 (`=2`) to the value of the next node, i.e. 3. To assign to the current node (2) you have to do `[`.
+
 3. It checks if the value inside current node divides the accumulator. `|` is simply that, it checks divisibility. The thing is that `|` alone would check if accumulator divides current\_node, because accumulator is always the first operand, so `@` flips the operands.
+
   1. If current\_node divides accumulator, then it copies the value from current\_node to next\_node, i.e., from 3 to 4.
+
   2. If it doesn't divide it, it increments its value, and jumps to itself.
+
 4. Suppose we moved to 4. So now we have a value that divides the accumulator, that we moved from 3 to 4. If that value is equal to the accumulator, it means that accumulator is prime, because it's not divisible by any number less than itself. So in that case we print it. Either case we increment it and jump back to 2.
+
 5. Go to step 2.
 
 
@@ -115,37 +125,27 @@ How to use
 
 To clone the repository and compile everything:
 
-```shell
-git clone https://github.com/gciruelos/quiver.git
-cd quiver
-make
-```
+    git clone https://github.com/gciruelos/quiver.git
+    cd quiver
+    make
 
 To see everything you can do, just run
 
-```shell
-./quiver
-```
+    ./quiver
 
 
 Then run some examples and write some of your own.
 
-```shell
-./quiver examples/primes.quiv
-./quiver examples/hangs.quiv
-```
+    ./quiver examples/primes.quiv
+    ./quiver examples/hangs.quiv
 
 If you want to generate the graph of a given program, run
 
-```shell
-./quiver --dot examples/<program>.quiv
-```
+    ./quiver --dot examples/<program>.quiv
 
 Which will generate a file called `graph.dot`, which you can transform to an image using the program `dot`.
 
-```shell
-dot -Tpng graph.dot -o graph.png
-```
+    dot -Tpng graph.dot -o graph.png
 
 
 
