@@ -13,13 +13,21 @@
 Program::Program(Argv* args) : args_(args) {
   std::ifstream infile(args_->Rest()[0]);
   std::string line;
+  size_t line_number = 1;
   while (std::getline(infile, line)) {
-    LineParser parser(line);
-    uint64_t node = parser.GetNode();
+    std::unique_ptr<LineParser> parser;
+    try {
+      parser = std::unique_ptr<LineParser>(new LineParser(line));
+    } catch (const std::exception& e) {
+      std::cerr << "Fatal error while parsing line " << line_number
+                << ": " << line << std::endl;
+      exit(0);
+    }
+    uint64_t node = parser->GetNode();
     conditions_.insert(std::make_pair(
-          node, std::unique_ptr<Condition>(parser.GetCondition())));
-    std::pair<uint64_t, Action*> if_true = parser.GetIfTrue();
-    std::pair<uint64_t, Action*> if_false = parser.GetIfFalse();
+          node, std::unique_ptr<Condition>(parser->GetCondition())));
+    std::pair<uint64_t, Action*> if_true = parser->GetIfTrue();
+    std::pair<uint64_t, Action*> if_false = parser->GetIfFalse();
     if_true_.insert(std::make_pair(node, if_true.first));
     if_false_.insert(std::make_pair(node, if_false.first));
     actions_[node].insert(std::make_pair(
@@ -27,6 +35,7 @@ Program::Program(Argv* args) : args_(args) {
     actions_[node].insert(std::make_pair(
         if_false.first, std::unique_ptr<Action>(if_false.second)));
     nodes_.insert(node);
+    line_number++;
   }
   state_ = std::unique_ptr<ProgramState>(new ProgramState(nodes_));
   if (args_->Rest().size() > 1) {
