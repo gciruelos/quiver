@@ -136,7 +136,7 @@ ParsedAction ActionBuilder::ConsumeAction(std::string action) {
 
 Action* ActionBuilder::BuildAction(std::string action) {
   if (action.empty()) {
-    action_factories.at(action_names.at(NOTHING_SYMBOL))->Create(
+    return action_factories.at(action_names.at(NOTHING_SYMBOL))->Create(
         ParsedAction());
   }
   if (action.find_first_not_of("1234567890") == std::string::npos &&
