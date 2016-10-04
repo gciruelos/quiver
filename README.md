@@ -111,8 +111,10 @@ What does this do?
 
 ![primes.quiv Graph](img/primes100.png)
 
+A detail
+--------
 
-Programs in Quiver must have at least one vertex other than the accumulator, so the smallest possible program in Quiver is
+Programs in Quiver must have at least one vertex other than the end node, so the smallest possible program in Quiver is
 
 ```
 0??()()
