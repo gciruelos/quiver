@@ -12,7 +12,7 @@ addons:
     packages:
     - gcc-6
     - g++-6
-    - clang-3.8
+    - clang
 
 script: 
 - $CXX --version
