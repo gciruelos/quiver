@@ -24,6 +24,6 @@ before_install:
 before_script:
   make clean
 script:
-  make -j quiver
+  make -j travis
 
 
