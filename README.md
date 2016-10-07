@@ -1,5 +1,7 @@
 quiver
 ======
+[![Build Status](https://travis-ci.org/gciruelos/quiver.svg?branch=master)](https://travis-ci.org/gciruelos/quiver)
+
 
 Quiver is a graph-based esoteric programming language.
 
@@ -150,5 +152,10 @@ Which will generate a file called `graph.dot`, which you can transform to an ima
 
     dot -Tpng graph.dot -o graph.png
 
+
+Implementation
+--------------
+
+  I implemented a C++ interpreter for the language. I'd also like to write a LLVM backend if I have the time.
 
 
