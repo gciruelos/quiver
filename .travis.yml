@@ -2,7 +2,7 @@ sudo: false
 language: cpp
 compiler:
 - gcc
-- clang
+# - clang
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
 addons:
@@ -12,7 +12,7 @@ addons:
     packages:
     - gcc-6
     - g++-6
-    - clang
+#    - clang
 
 script: 
 - $CXX --version
