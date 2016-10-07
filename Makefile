@@ -17,8 +17,11 @@ all: $(OBJ_DIR) $(EXECUTABLE)
 clean:
 	rm -f $(OBJS) $(EXECUTABLE)
 
-debug: OPT_FLAGS=-ggdb -O2
+debug: OPT_FLAGS=-ggdb -O2 -DGLIBCXX_FORCE_NEW=1
 debug: all
+
+travis: CC=$(CXX)
+travis: all
 
 $(OBJ_DIR):
 	${MKDIR_P} $@
@@ -29,3 +32,6 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cc
 $(EXECUTABLE): $(OBJS)
 	$(CC) $(LFLAGS) $(OPT_FLAGS) $^ -o $@
 
+
+valgrind: clean debug
+	valgrind -v --num-callers=20 --leak-check=yes --leak-resolution=high --show-reachable=yes ./$(EXECUTABLE) examples/primes.quiv
