@@ -1,5 +1,5 @@
 CC = g++
-WARNINGS = -Wall -Wextra -Wno-unused-result -Wshadow -Wpointer-arith -Wcast-qual
+WARNINGS = -Wall -Wextra -Wno-unused-result -Wcast-qual
 OPT_FLAGS = -O2 -flto
 CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic
 LFLAGS =
@@ -19,6 +19,9 @@ clean:
 
 debug: OPT_FLAGS=-ggdb -O2 -DGLIBCXX_FORCE_NEW=1
 debug: all
+
+perf: OPT_FLAGS+= -fno-rtti -fno-omit-frame-pointer
+perf: all
 
 travis: CC=$(CXX)
 travis: all
