@@ -21,7 +21,7 @@ Program::Program(Argv* args) : args_(args) {
     } catch (const std::exception& e) {
       std::cerr << "Fatal error while parsing line " << line_number
                 << ": " << line << std::endl;
-      exit(0);
+      exit(1);
     }
     uint64_t node = parser->GetNode();
     conditions_.insert(std::make_pair(
