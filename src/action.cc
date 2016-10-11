@@ -199,11 +199,9 @@ ParsedAction ActionBuilder::ConsumeAction(std::string action) {
     if (action.compare(0, s.length(), s) == 0) {
       if (s.length() > match.length()) {
         match = s;
-        std::cerr << match << std::endl;
       }
     }
   }
-  std::cerr << "Definitive: " << match << std::endl;
   if (match.empty()) {
     return std::make_pair(NOTHING_SYMBOL, "");
   } else {
