@@ -194,12 +194,21 @@ REGISTER_ACTION("~>", SquigglyMoveTo)
 
 
 ParsedAction ActionBuilder::ConsumeAction(std::string action) {
+  std::string match;
   for (auto& s : symbols) {
     if (action.compare(0, s.length(), s) == 0) {
-      return std::make_pair(s, SubstringFrom(action, s.length()));
+      if (s.length() > match.length()) {
+        match = s;
+        std::cerr << match << std::endl;
+      }
     }
   }
-  return std::make_pair(NOTHING_SYMBOL, "");
+  std::cerr << "Definitive: " << match << std::endl;
+  if (match.empty()) {
+    return std::make_pair(NOTHING_SYMBOL, "");
+  } else {
+    return std::make_pair(match, SubstringFrom(action, match.length()));
+  }
 }
 
 Action* ActionBuilder::BuildAction(std::string action) {
@@ -218,16 +227,23 @@ Action* ActionBuilder::BuildAction(std::string action) {
     action.erase(0, 1);
   }
   ParsedAction separated = ConsumeAction(action);
+  std::string match;
   for (auto& x : symbols) {
     if (action.compare(0, x.length(), x) == 0) {
-      if (affected == '[' || affected == ']') {
-        separated.first = affected + separated.first;
+      if (x.length() > match.length()) {
+        match = x;
       }
-      return action_factories.at(action_names.at(x))->Create(separated);
     }
   }
-  return action_factories.at(
-      action_names.at(NOTHING_SYMBOL))->Create(separated);
+  if (affected == '[' || affected == ']') {
+    separated.first = affected + separated.first;
+  }
+  if (match.empty()) {
+    return action_factories.at(
+        action_names.at(NOTHING_SYMBOL))->Create(separated);
+  } else {
+    return action_factories.at(action_names.at(match))->Create(separated);
+  }
 }
 
 ActionBuilder& ActionBuilder::Instance() {
