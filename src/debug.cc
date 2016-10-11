@@ -35,6 +35,14 @@ std::string ActionDebug::VisitAssign(Assign* a) {
   return GetActionName(a->symbol) + "{" + pretty_.VisitAssign(a) + "}";
 }
 
+std::string ActionDebug::VisitAdd(Add* a) {
+  return GetActionName(a->symbol) + "{" + pretty_.VisitAdd(a) + "}";
+}
+
+std::string ActionDebug::VisitMultiply(Multiply* m) {
+  return GetActionName(m->symbol) + "{" + pretty_.VisitMultiply(m) + "}";
+}
+
 std::string ActionDebug::VisitSquigglyMoveTo(SquigglyMoveTo* s) {
   return GetActionName(s->symbol) + "{" + pretty_.VisitSquigglyMoveTo(s) + "}";
 }

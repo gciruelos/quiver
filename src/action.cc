@@ -19,6 +19,35 @@
     }; \
     static klass##Factory global_##klass##Factory;
 
+std::pair<uint64_t*, uint64_t> ActionOperands(
+    AffectedValue aff,
+    bool arg_is_value,
+    uint64_t value,
+    ProgramState* s) {
+  uint64_t* fst_op;
+  uint64_t snd_op;
+  if (aff == ACCUMULATOR) {
+    fst_op = &s->Accumulator();
+    if (arg_is_value) {
+      snd_op = value;
+    } else {
+      snd_op = s->CurrentNodeValue();
+    }
+  } else {
+    if (aff == CURRENT_NODE) {
+      fst_op = &s->CurrentNodeValue();
+    } else {
+      fst_op = &s->NodeValue(s->NextNode());
+    }
+    if (arg_is_value) {
+      snd_op = value;
+    } else {
+      snd_op = s->Accumulator();
+    }
+  }
+  return std::make_pair(fst_op, snd_op);
+}
+
 AffectedValue GetAffectedValue(char indicator) {
   switch (indicator) {
     case '[':
@@ -27,6 +56,17 @@ AffectedValue GetAffectedValue(char indicator) {
       return NEXT_NODE;
     default:
       return ACCUMULATOR;
+  }
+}
+
+void InitializeActionValue(const ParsedAction& s,
+    bool* arg_is_value, uint64_t* value, AffectedValue* affected_value) {
+  *affected_value = GetAffectedValue(s.first[0]);
+  if (s.second.empty()) {
+    *arg_is_value = false;
+  } else {
+    *value = std::stoi(s.second);
+    *arg_is_value = true;
   }
 }
 
@@ -110,6 +150,34 @@ std::string Assign::Accept(ActionVisitor* visitor) {
   return visitor->VisitAssign(this);
 }
 REGISTER_ACTION("=", Assign)
+
+
+Add::Add(ParsedAction s) {
+  InitializeActionValue(s, &arg_is_value, &value, &aff);
+}
+void Add::Do(ProgramState* state) {
+  std::pair<uint64_t*, uint64_t> operands =
+      ActionOperands(aff, arg_is_value, value, state);
+  *(operands.first) = operands.second + *(operands.first);
+}
+std::string Add::Accept(ActionVisitor* visitor) {
+  return visitor->VisitAdd(this);
+}
+REGISTER_ACTION("+", Add)
+
+
+Multiply::Multiply(ParsedAction s) {
+  InitializeActionValue(s, &arg_is_value, &value, &aff);
+}
+void Multiply::Do(ProgramState* state) {
+  std::pair<uint64_t*, uint64_t> operands =
+      ActionOperands(aff, arg_is_value, value, state);
+  *(operands.first) = operands.second * *(operands.first);
+}
+std::string Multiply::Accept(ActionVisitor* visitor) {
+  return visitor->VisitMultiply(this);
+}
+REGISTER_ACTION("*", Multiply)
 
 
 SquigglyMoveTo::SquigglyMoveTo(ParsedAction s __attribute__((unused))) {

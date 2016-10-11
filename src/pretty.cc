@@ -20,6 +20,32 @@ std::string IndicatorName(char indicator) {
   }
 }
 
+std::pair<std::string, std::string> PrettyActionOperands(
+    AffectedValue aff, bool arg_is_value, uint64_t value) {
+  std::string fst_op, snd_op;
+  if (aff == ACCUMULATOR) {
+    fst_op = STRING_ACCUMULATOR;
+    if (arg_is_value) {
+      snd_op = std::to_string(value);
+    } else {
+      snd_op = STRING_CURRENT;
+    }
+  } else {
+    if (aff == CURRENT_NODE) {
+      fst_op = STRING_CURRENT;
+    } else {
+      fst_op = STRING_NEXT;
+    }
+    if (arg_is_value) {
+      snd_op = std::to_string(value);
+    } else {
+      snd_op = STRING_ACCUMULATOR;
+    }
+  }
+  return std::make_pair(fst_op, snd_op);
+}
+
+
 std::string ActionPretty::VisitNothing(
     Nothing* nothing __attribute__((unused))) {
   return "<nothing>";
@@ -43,6 +69,18 @@ std::string ActionPretty::VisitIncrement(Increment* increment) {
 
 std::string ActionPretty::VisitAssign(Assign* assign) {
   return IndicatorName(assign->aff) + " = " + std::to_string(assign->new_val);
+}
+
+std::string ActionPretty::VisitAdd(Add* add) {
+  std::pair<std::string, std::string> operands(PrettyActionOperands(
+        add->aff, add->arg_is_value, add->value));
+  return operands.first + " += " + operands.second;
+}
+
+std::string ActionPretty::VisitMultiply(Multiply* mul) {
+  std::pair<std::string, std::string> operands(PrettyActionOperands(
+        mul->aff, mul->arg_is_value, mul->value));
+  return operands.first + " *= " + operands.second;
 }
 
 std::string ActionPretty::VisitSquigglyMoveTo(

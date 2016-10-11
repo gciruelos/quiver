@@ -15,6 +15,8 @@ class ActionDebug : public ActionVisitor {
   virtual std::string VisitDecrement(Decrement*);
   virtual std::string VisitIncrement(Increment*);
   virtual std::string VisitAssign(Assign*);
+  virtual std::string VisitAdd(Add*);
+  virtual std::string VisitMultiply(Multiply*);
   virtual std::string VisitSquigglyMoveTo(SquigglyMoveTo*);
  private:
   ActionPretty pretty_;

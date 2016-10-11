@@ -103,6 +103,29 @@ class SquigglyMoveTo : public Action {
   static const std::string symbol;
 };
 
+class Add : public Action {
+ public:
+  explicit Add(ParsedAction);
+  virtual void Do(ProgramState*);
+  virtual std::string Accept(ActionVisitor*);
+
+  uint64_t value;
+  bool arg_is_value;
+  AffectedValue aff;
+  static const std::string symbol;
+};
+
+class Multiply : public Action {
+ public:
+  explicit Multiply(ParsedAction);
+  virtual void Do(ProgramState*);
+  virtual std::string Accept(ActionVisitor*);
+
+  uint64_t value;
+  bool arg_is_value;
+  AffectedValue aff;
+  static const std::string symbol;
+};
 
 class ActionVisitor {
  public:
@@ -112,6 +135,8 @@ class ActionVisitor {
   virtual std::string VisitDecrement(Decrement*) = 0;
   virtual std::string VisitIncrement(Increment*) = 0;
   virtual std::string VisitAssign(Assign*) = 0;
+  virtual std::string VisitAdd(Add*) = 0;
+  virtual std::string VisitMultiply(Multiply*) = 0;
   virtual std::string VisitSquigglyMoveTo(SquigglyMoveTo*) = 0;
 };
 
