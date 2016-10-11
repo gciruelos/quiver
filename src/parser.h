@@ -19,6 +19,8 @@ class LineParser {
   std::pair<uint64_t, Action*> GetIfTrue();
   std::pair<uint64_t, Action*> GetIfFalse();
 
+  bool Failed();
+
  private:
   uint64_t from_;
   std::unique_ptr<Condition> c_;
@@ -30,6 +32,12 @@ class LineParser {
   const char close_action_ = ')';
 
   uint64_t ParseNode(std::string node);
+  void ParseSection(
+    std::string*,
+    std::string::iterator*,
+    char);
+
+  bool failed_;
 };
 
 #endif
