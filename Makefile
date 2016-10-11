@@ -10,7 +10,7 @@ OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.cc=.o)))
 EXECUTABLE = quiver
 MKDIR_P = mkdir -p
 
-.PHONY: all clean debug
+.PHONY: all clean debug travis
 
 all: $(OBJ_DIR) $(EXECUTABLE)
 
