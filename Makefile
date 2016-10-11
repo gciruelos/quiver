@@ -1,7 +1,7 @@
 CC = g++
 WARNINGS = -Wall -Wextra -Wno-unused-result -Wcast-qual
 OPT_FLAGS = -O2 -flto
-CFLAGS = $(WARNINGS) -Werror -std=c++14 -pedantic
+CFLAGS = $(WARNINGS) -Werror -std=c++11 -pedantic
 LFLAGS =
 SRC_DIR = src/
 OBJ_DIR = obj/
@@ -25,6 +25,12 @@ perf: all
 
 travis: CC=$(CXX)
 travis: all
+	./$(EXECUTABLE) examples/1to10.quiv
+	./$(EXECUTABLE) examples/factorial.quiv 11
+	./$(EXECUTABLE) examples/primes.quiv
+	./$(EXECUTABLE) examples/hello-world.quiv
+	./$(EXECUTABLE) examples/99-bottles.quiv
+	./$(EXECUTABLE) examples/empty.quiv
 
 $(OBJ_DIR):
 	${MKDIR_P} $@
