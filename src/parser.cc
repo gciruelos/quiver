@@ -14,9 +14,18 @@ uint64_t LineParser::ParseNode(std::string node) {
 void LineParser::ParseSection(
     std::string* section,
     std::string::iterator* iter,
-    char separator) {
+    char separator,
+    std::string line) {
+  if (*iter == line.end()) {
+    failed_ = true;
+    return;
+  }
   while (**iter != separator) {
     section->push_back(*(*iter)++);
+    if (*iter == line.end()) {
+      failed_ = true;
+      return;
+    }
   }
   (*iter)++;
 }
@@ -32,16 +41,19 @@ LineParser::LineParser(std::string line) {
   ActionBuilder& action_builder = ActionBuilder::Instance();
   ConditionBuilder& condition_builder = ConditionBuilder::Instance();
 
-  failed_ = true;
-  auto line_iter = line.begin();
-  ParseSection(&from, &line_iter, condition_mark_);
-  ParseSection(&condition, &line_iter, condition_mark_);
-  ParseSection(&to1, &line_iter, open_action_);
-  ParseSection(&action1, &line_iter, close_action_);
-  ParseSection(&to2, &line_iter, open_action_);
-  ParseSection(&action2, &line_iter, close_action_);
-
   failed_ = false;
+  auto line_iter = line.begin();
+  ParseSection(&from, &line_iter, condition_mark_, line);
+  ParseSection(&condition, &line_iter, condition_mark_, line);
+  ParseSection(&to1, &line_iter, open_action_, line);
+  ParseSection(&action1, &line_iter, close_action_, line);
+  ParseSection(&to2, &line_iter, open_action_, line);
+  ParseSection(&action2, &line_iter, close_action_, line);
+
+  if (failed_) {
+    return;
+  }
+
   from_ = ParseNode(from);
   c_ = std::unique_ptr<Condition>(condition_builder.BuildCondition(condition));
   if_true_ = std::make_pair(

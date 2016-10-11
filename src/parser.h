@@ -35,7 +35,8 @@ class LineParser {
   void ParseSection(
     std::string*,
     std::string::iterator*,
-    char);
+    char,
+    std::string);
 
   bool failed_;
 };
