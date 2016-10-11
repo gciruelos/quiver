@@ -24,6 +24,7 @@ class Program {
 
  private:
   uint64_t GetNextNode();
+  void HaltAndCatchFire(size_t line_number, std::string line);
 
   Argv* args_;
   std::map<uint64_t, std::map<uint64_t, std::unique_ptr<Action>>> actions_;

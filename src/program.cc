@@ -10,7 +10,6 @@
 
 #define PRINT_END(x) (((x) == end_node)? "<END>" : std::to_string(x))
 
-
 Program::Program(Argv* args) : args_(args) {
   std::ifstream infile(args_->Rest()[0]);
   std::string line;
@@ -20,13 +19,10 @@ Program::Program(Argv* args) : args_(args) {
     try {
       parser = std::unique_ptr<LineParser>(new LineParser(line));
     } catch (const std::exception& e) {
-      std::cerr << "Fatal error while parsing line " << line_number
-                << ": " << line << std::endl;
-      exit(1);
+      HaltAndCatchFire(line_number, line);
     }
     if (parser->Failed()) {
-      std::cerr << "Fatal error while parsing the program." << std::endl;
-      exit(1);
+      HaltAndCatchFire(line_number, line);
     }
     uint64_t node = parser->GetNode();
     conditions_.insert(std::make_pair(
@@ -104,5 +100,9 @@ uint64_t Program::GetNextNode() {
       : if_false_[current_node]);
 }
 
-
+void Program::HaltAndCatchFire(size_t line_number, std::string line) {
+  std::cerr << "Fatal error while parsing line " << line_number
+            << ": " << line << std::endl;
+  exit(1);
+}
 
