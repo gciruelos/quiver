@@ -5,6 +5,7 @@ int main(int argc, char** argv) {
   Argv args;
   args.Add(' ', "debug", "Show extensive debug information.");
   args.Add(' ', "dot", "Generate dot graph file.");
+  args.Add(' ', "no-exec", "Don't execute the program.");
   args.Add(' ', "parsed", "Show the parsing debug information.");
 
   args.Parse(argc, argv);
@@ -20,6 +21,9 @@ int main(int argc, char** argv) {
     if (args.Check("dot")) {
       p.Dot();
       return 0;
+    }
+    if (args.Check("no-exec")) {
+      exit(0);
     }
     p.Execute();
   } else {
