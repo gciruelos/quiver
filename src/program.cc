@@ -50,7 +50,6 @@ Program::Program(Argv* args) : args_(args) {
   for (uint64_t node : nodes_) {
     node_to_index_.insert(std::make_pair(node, index++));
     index_to_node_.push_back(node);
-    std::cerr << node << " " << node_to_index_.at(node) << std::endl;
   }
 
   for (auto& result : results) {
