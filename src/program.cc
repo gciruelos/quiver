@@ -22,7 +22,7 @@ Program::Program(Argv* args) : args_(args) {
   std::ifstream infile(args_->Rest()[0]);
   if (!infile) {
     std::cerr << "Failed to open file: " << args_->Rest()[0] << std::endl;;
-    exit(0);
+    exit(1);
   }
   std::string line;
   size_t line_number = 1;
@@ -100,9 +100,10 @@ void Program::ShowParsed() {
 
 void Program::Execute() {
   bool debug_on = args_->Check("debug");
+  ProgramState* state = state_.get();
   while (state_->CurrentNode() != end_node) {
-    bool condition = conditions_[state_->CurrentNode()]->Check(state_.get());
     uint64_t current_node = state_->CurrentNode();
+    bool condition = conditions_[current_node]->Check(state);
     state_->NextNode() = GetNextNode(condition);
     if (debug_on) {
       std::cerr << "Current node: " << index_to_node_[current_node] << "\t"
@@ -111,7 +112,7 @@ void Program::Execute() {
                 << "Current node value: " << state_->CurrentNodeValue()
                 << std::endl;
     }
-    GetAction(current_node, condition)->Do(state_.get());
+    GetAction(current_node, condition)->Do(state);
     state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
   }
