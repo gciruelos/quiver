@@ -146,7 +146,7 @@ Then run some examples and write some of your own.
 
 If you want to generate the graph of a given program, run
 
-    ./quiver --dot examples/<program>.quiv
+    ./quiver --dot examples/<program>.quiv > graph.dot
 
 Which will generate a file called `graph.dot`, which you can transform to an image using the program `dot`.
 

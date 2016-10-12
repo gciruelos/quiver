@@ -114,7 +114,7 @@ void Program::Execute() {
 }
 
 void Program::Dot() {
-  GenerateDot("graph.dot", nodes_, node_to_index_, same_action_,
+  GenerateDot(nodes_, node_to_index_, same_action_,
       action_if_true_, action_if_false_, conditions_, if_true_, if_false_);
 }
 

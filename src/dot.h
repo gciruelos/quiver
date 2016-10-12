@@ -14,7 +14,6 @@
 
 // https://en.wikipedia.org/wiki/DOT_(graph_description_language)
 void GenerateDot(
-    std::string filename,
     const std::set<uint64_t>& nodes,
     const std::unordered_map<uint64_t, uint64_t>& node_to_index,
     const std::vector<bool>& same_action,
