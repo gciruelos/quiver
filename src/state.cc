@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <utility>
 
-ProgramState::ProgramState(std::set<uint64_t> nodes)
+ProgramState::ProgramState(uint64_t nodes)
   : accumulator_(0),
-    current_node_(*std::min_element(nodes.begin(), nodes.end())),
+    current_node_(0),
     last_node_(current_node_) {
-  for (auto n : nodes) {
-    node_values_.insert(std::make_pair(n, 0));
+  for (uint64_t i = 0; i < nodes; i++) {
+    node_values_.insert(std::make_pair(i, 0));
   }
 }
 

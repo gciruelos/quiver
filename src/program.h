@@ -6,6 +6,7 @@
 #include <set>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "argv.h"
 #include "condition.h"
@@ -17,22 +18,30 @@
 class Program {
  public:
   explicit Program(Argv* args);
-  ~Program();
   void Execute();
   void ShowParsed();
   void Dot();
 
+  uint64_t NodeToIndex(uint64_t node);
+
  private:
-  uint64_t GetNextNode();
+  Action* GetAction(uint64_t index, bool condition);
+  uint64_t GetNextNode(bool condition);
   void HaltAndCatchFire(size_t line_number, std::string line);
 
   Argv* args_;
-  std::unordered_map<uint64_t,
-      std::unordered_map<uint64_t, std::unique_ptr<Action>>> actions_;
-  std::unordered_map<uint64_t, std::unique_ptr<Condition>> conditions_;
-  std::unordered_map<uint64_t, uint64_t> if_true_;
-  std::unordered_map<uint64_t, uint64_t> if_false_;
+
+  std::vector<std::unique_ptr<Condition>> conditions_;
+  std::vector<uint64_t> if_true_;
+  std::vector<uint64_t> if_false_;
+  std::vector<bool> same_action_;
+  std::vector<std::unique_ptr<Action>> action_if_true_;
+  std::vector<std::unique_ptr<Action>> action_if_false_;
+
   std::set<uint64_t> nodes_;
   std::unique_ptr<ProgramState> state_;
+
+  std::vector<uint64_t> index_to_node_;
+  std::unordered_map<uint64_t, uint64_t> node_to_index_;
 };
 #endif

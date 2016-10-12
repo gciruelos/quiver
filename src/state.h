@@ -7,7 +7,7 @@
 
 class ProgramState {
  public:
-  explicit ProgramState(std::set<uint64_t> nodes);
+  explicit ProgramState(uint64_t nodes);
 
   uint64_t& Accumulator();
   uint64_t const& Accumulator() const;
