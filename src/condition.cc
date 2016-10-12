@@ -35,22 +35,10 @@ void InitializeValue(const ParsedCondition& s,
 std::pair<uint64_t, uint64_t> Operands(bool rotate_operands, bool arg_is_value,
     uint64_t value, ProgramState* s) {
   uint64_t fst_op, snd_op;
-  if (!rotate_operands) {
-    fst_op = s->Accumulator();
-    if (arg_is_value) {
-      snd_op = value;
-    } else {
-      snd_op = s->CurrentNodeValue();
-    }
-  } else {
-    snd_op = s->Accumulator();
-    if (arg_is_value) {
-      fst_op = value;
-    } else {
-      fst_op = s->CurrentNodeValue();
-    }
-  }
-  return std::make_pair(fst_op, snd_op);
+  fst_op = s->Accumulator();
+  snd_op = arg_is_value ? snd_op = value : snd_op = s->CurrentNodeValue(); 
+  return rotate_operands ?
+      std::make_pair(snd_op, fst_op) : std::make_pair(fst_op, snd_op);
 }
 
 
