@@ -8,9 +8,9 @@
 void GenerateDot(
     std::string filename,
     const std::set<uint64_t>& nodes,
-    const std::map<uint64_t, std::map<uint64_t, std::unique_ptr<Action>>>&
-    actions,
-    const std::map<uint64_t, std::unique_ptr<Condition>>& conditions,
+    const std::unordered_map<uint64_t,
+        std::unordered_map<uint64_t, std::unique_ptr<Action>>>& actions,
+    const std::unordered_map<uint64_t, std::unique_ptr<Condition>>& conditions,
     const std::unordered_map<uint64_t, uint64_t>& if_true,
     const std::unordered_map<uint64_t, uint64_t>& if_false) {
 

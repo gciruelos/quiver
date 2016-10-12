@@ -16,8 +16,9 @@
 void GenerateDot(
     std::string filename,
     const std::set<uint64_t>&,
-    const std::map<uint64_t, std::map<uint64_t, std::unique_ptr<Action>>>&,
-    const std::map<uint64_t, std::unique_ptr<Condition>>&,
+    const std::unordered_map<uint64_t,
+        std::unordered_map<uint64_t, std::unique_ptr<Action>>>&,
+    const std::unordered_map<uint64_t, std::unique_ptr<Condition>>&,
     const std::unordered_map<uint64_t, uint64_t>&,
     const std::unordered_map<uint64_t, uint64_t>&);
 

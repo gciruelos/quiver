@@ -73,10 +73,11 @@ void Program::ShowParsed() {
 }
 
 void Program::Execute() {
+  bool debug_on = args_->Check("debug");
   while (state_->CurrentNode() != end_node) {
     uint64_t current_node = state_->CurrentNode();
     state_->NextNode() = GetNextNode();
-    if (args_->Check("debug")) {
+    if (debug_on) {
       std::cerr << "Current node: " << current_node << "\t"
                 << "Next node: " << state_->NextNode() << "\t"
                 << "Accumulator value: " << state_->Accumulator() << "\t"

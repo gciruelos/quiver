@@ -27,8 +27,9 @@ class Program {
   void HaltAndCatchFire(size_t line_number, std::string line);
 
   Argv* args_;
-  std::map<uint64_t, std::map<uint64_t, std::unique_ptr<Action>>> actions_;
-  std::map<uint64_t, std::unique_ptr<Condition>> conditions_;
+  std::unordered_map<uint64_t,
+      std::unordered_map<uint64_t, std::unique_ptr<Action>>> actions_;
+  std::unordered_map<uint64_t, std::unique_ptr<Condition>> conditions_;
   std::unordered_map<uint64_t, uint64_t> if_true_;
   std::unordered_map<uint64_t, uint64_t> if_false_;
   std::set<uint64_t> nodes_;
