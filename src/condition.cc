@@ -36,7 +36,7 @@ std::pair<uint64_t, uint64_t> Operands(bool rotate_operands, bool arg_is_value,
     uint64_t value, ProgramState* s) {
   uint64_t fst_op, snd_op;
   fst_op = s->Accumulator();
-  snd_op = arg_is_value ? snd_op = value : snd_op = s->CurrentNodeValue(); 
+  snd_op = arg_is_value ? value : s->CurrentNodeValue(); 
   return rotate_operands ?
       std::make_pair(snd_op, fst_op) : std::make_pair(fst_op, snd_op);
 }
