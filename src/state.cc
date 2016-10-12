@@ -8,7 +8,7 @@ ProgramState::ProgramState(uint64_t nodes)
     current_node_(0),
     last_node_(current_node_) {
   for (uint64_t i = 0; i < nodes; i++) {
-    node_values_.insert(std::make_pair(i, 0));
+    node_values_.push_back(0);
   }
 }
 
@@ -21,19 +21,19 @@ uint64_t const & ProgramState::Accumulator() const {
 }
 
 uint64_t& ProgramState::NodeValue(uint64_t node) {
-  return node_values_.at(node);
+  return node_values_[node];
 }
 
 uint64_t const & ProgramState::NodeValue(uint64_t node) const {
-  return node_values_.at(node);
+  return node_values_[node];
 }
 
 uint64_t& ProgramState::CurrentNodeValue() {
-  return node_values_.at(current_node_);
+  return node_values_[current_node_];
 }
 
 uint64_t const & ProgramState::CurrentNodeValue() const {
-  return node_values_.at(current_node_);
+  return node_values_[current_node_];
 }
 
 uint64_t& ProgramState::CurrentNode() {

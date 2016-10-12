@@ -2,8 +2,7 @@
 #define STATE_H
 
 #include <cstdint>
-#include <set>
-#include <unordered_map>
+#include <vector>
 
 class ProgramState {
  public:
@@ -32,7 +31,7 @@ class ProgramState {
   uint64_t next_node_;
   uint64_t current_node_;
   uint64_t last_node_;
-  std::unordered_map<uint64_t, uint64_t> node_values_;
+  std::vector<uint64_t> node_values_;
 };
 
 #endif
