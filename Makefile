@@ -1,6 +1,6 @@
-CC = g++
+CC = clang++
 WARNINGS = -Wall -Wextra -Wno-unused-result -Wcast-qual
-OPT_FLAGS = -O2 -flto
+OPT_FLAGS = -O3 -flto
 CFLAGS = $(WARNINGS) -Werror -std=c++11 -pedantic
 LFLAGS =
 SRC_DIR = src/
@@ -17,7 +17,7 @@ all: $(OBJ_DIR) $(EXECUTABLE)
 clean:
 	rm -f $(OBJS) $(EXECUTABLE)
 
-debug: OPT_FLAGS=-ggdb -O2 -DGLIBCXX_FORCE_NEW=1
+debug: OPT_FLAGS=-ggdb -O0
 debug: all
 
 perf: OPT_FLAGS+= -fno-rtti -fno-omit-frame-pointer
