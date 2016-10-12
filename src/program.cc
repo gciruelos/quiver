@@ -20,6 +20,10 @@ typedef std::tuple<
 
 Program::Program(Argv* args) : args_(args) {
   std::ifstream infile(args_->Rest()[0]);
+  if (!infile) {
+    std::cerr << "Failed to open file: " << args_->Rest()[0] << std::endl;;
+    exit(0);
+  }
   std::string line;
   size_t line_number = 1;
   std::vector<LineResult> results;
