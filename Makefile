@@ -1,6 +1,6 @@
-CC = clang++
+CC = g++
 WARNINGS = -Wall -Wextra -Wno-unused-result -Wcast-qual
-OPT_FLAGS = -O3 -flto
+OPT_FLAGS = -O2 -flto
 CFLAGS = $(WARNINGS) -Werror -std=c++11 -pedantic
 LFLAGS =
 SRC_DIR = src/
@@ -20,7 +20,7 @@ clean:
 debug: OPT_FLAGS=-ggdb -O0
 debug: all
 
-perf: OPT_FLAGS+= -fno-rtti -fno-omit-frame-pointer
+perf: OPT_FLAGS+= -ggdb -fno-rtti -fno-omit-frame-pointer
 perf: all
 
 travis: CC=$(CXX)

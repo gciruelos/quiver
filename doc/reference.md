@@ -1,12 +1,3 @@
-quiver
-======
-[![Build Status](https://travis-ci.org/gciruelos/quiver.svg?branch=master)](https://travis-ci.org/gciruelos/quiver)
-
-
-Quiver is a graph-based esoteric programming language.
-
-It was designed as an entry for [CALESYTA 2016](http://calesyta.xyz/en/).
-
 Syntax
 ------
 
@@ -72,48 +63,54 @@ Let's see what happens:
 
 4. It jumps to 1 and increments the accumulator.
 
-![1to10.quiv Graph](doc/img/1to10.png)
+![1to10.quiv Graph](img/1to10.png)
 
 Here you can clearly see what's going on. Green edges mean true branch, while red edges mean false branch. The blue box is the starting node.
 
 This graph was generated automatically, we will learn later how.
 
-More
-----
-
-You can read more about Quiver in the [reference manual](doc/reference.md).
-
-How to use
-----------
-
-To clone the repository and compile everything:
-
-    git clone https://github.com/gciruelos/quiver.git
-    cd quiver
-    make
-
-To see everything you can do, just run
-
-    ./quiver
 
 
-Then run some examples and write some of your own.
+Advanced Quiver
+---------------
 
-    ./quiver examples/primes.quiv
-    ./quiver examples/hangs.quiv
+Let's look at more advanced stuff. The following program outputs all prime numbers from 1 to 100.
 
-If you want to generate the graph of a given program, run
+```
+1??2(2)()
+2?<100?3(]=2)()
+3?@|?4(~>)3([++)
+4?==?5(p)2(++)
+5??6('\n)()
+6??2(++)()
+```
 
-    ./quiver --dot examples/<program>.quiv > graph.dot
+What does this do?
 
-Which will generate a file called `graph.dot`, which you can transform to an image using the program `dot`.
+1. It assigns 2 to the accumulator and jumps to 2.
 
-    dot -Tpng graph.dot -o graph.png
+2. It compares the accumulator with 100, if it is 100 or more, it halts, if it is less it goes to three. `]=2` means that it assigns 2 (`=2`) to the value of the next node, i.e. 3. To assign to the current node (2) you have to do `[`.
+
+3. It checks if the value inside current node divides the accumulator. `|` is simply that, it checks divisibility. The thing is that `|` alone would check if accumulator divides current\_node, because accumulator is always the first operand, so `@` flips the operands.
+
+  1. If current\_node divides accumulator, then it copies the value from current\_node to next\_node, i.e., from 3 to 4.
+
+  2. If it doesn't divide it, it increments its value, and jumps to itself.
+
+4. Suppose we moved to 4. So now we have a value that divides the accumulator, that we moved from 3 to 4. If that value is equal to the accumulator, it means that accumulator is prime, because it's not divisible by any number less than itself. So in that case we print it. Either case we increment it and jump back to 2.
+
+5. Go to step 2.
 
 
-Implementation
---------------
+![primes.quiv Graph](img/primes100.png)
 
-  I implemented a C++ interpreter for the language. I'd also like to write a LLVM backend if I have the time.
+A detail
+--------
 
+Programs in Quiver must have at least one vertex other than the end node, so the smallest possible program in Quiver is
 
+```
+0??()()
+```
+
+And it does nothing.

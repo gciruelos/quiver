@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
       return 0;
     }
     if (args.Check("no-exec")) {
-      exit(0);
+      return 0;
     }
     p.Execute();
   } else {
