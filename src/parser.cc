@@ -3,11 +3,13 @@
 #include <iostream>
 #include <utility>
 
+#include "utils.h"
+
 uint64_t LineParser::ParseNode(std::string node) {
   if (node.size() == 0) {
     return end_node;
   } else {
-    return std::stoi(node);
+    return Stoi(node, &failed_);
   }
 }
 

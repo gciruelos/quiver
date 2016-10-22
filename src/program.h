@@ -17,8 +17,8 @@
 
 class Program {
  public:
-  explicit Program(Argv* args);
-  void Execute();
+  explicit Program(Argv* args, std::vector<std::string> lines);
+  void Execute(std::ostream& output = std::cout);
   void ShowParsed();
   void Dot();
 

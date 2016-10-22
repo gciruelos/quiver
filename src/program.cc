@@ -3,9 +3,11 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <utility>
 
+#include "argv.h"
 #include "debug.h"
 #include "dot.h"
 
@@ -18,16 +20,10 @@ typedef std::tuple<
     uint64_t, std::unique_ptr<Action>> LineResult;
 
 
-Program::Program(Argv* args) : args_(args) {
-  std::ifstream infile(args_->Rest()[0]);
-  if (!infile) {
-    std::cerr << "Failed to open file: " << args_->Rest()[0] << std::endl;;
-    exit(1);
-  }
-  std::string line;
+Program::Program(Argv* args, std::vector<std::string> lines) : args_(args) {
   size_t line_number = 1;
   std::vector<LineResult> results;
-  while (std::getline(infile, line)) {
+  for (std::string line : lines) {
     std::unique_ptr<LineParser> parser;
     try {
       parser = std::unique_ptr<LineParser>(new LineParser(line));
@@ -98,7 +94,7 @@ void Program::ShowParsed() {
   }
 }
 
-void Program::Execute() {
+void Program::Execute(std::ostream& output) {
   bool debug_on = args_->Check("debug");
   ProgramState* state = state_.get();
   while (state_->CurrentNode() != end_node) {
@@ -112,6 +108,8 @@ void Program::Execute() {
                 << "Current node value: " << state_->CurrentNodeValue()
                 << std::endl;
     }
+    output << state_->OutputBufferString().str();
+    state_->OutputBufferString().str(std::string());
     GetAction(current_node, condition)->Do(state);
     state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
@@ -152,4 +150,3 @@ void Program::HaltAndCatchFire(size_t line_number, std::string line) {
             << ": " << line << std::endl;
   exit(1);
 }
-

@@ -59,3 +59,11 @@ uint64_t& ProgramState::NextNode() {
 uint64_t const & ProgramState::NextNode() const {
   return next_node_;
 }
+
+std::ostream& ProgramState::OutputBuffer() {
+  return output_buffer_;
+}
+
+std::stringstream& ProgramState::OutputBufferString() {
+  return output_buffer_;
+}

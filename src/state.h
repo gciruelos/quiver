@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <vector>
+#include <sstream>
+#include <iostream>
 
 class ProgramState {
  public:
@@ -26,12 +28,16 @@ class ProgramState {
   uint64_t& NextNode();
   uint64_t const& NextNode() const;
 
+  std::ostream& OutputBuffer();
+  std::stringstream& OutputBufferString();
+
  private:
   uint64_t accumulator_;
   uint64_t next_node_;
   uint64_t current_node_;
   uint64_t last_node_;
   std::vector<uint64_t> node_values_;
+  std::stringstream output_buffer_;
 };
 
 #endif

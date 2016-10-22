@@ -95,8 +95,8 @@ REGISTER_ACTION(NOTHING_SYMBOL, Nothing)
 
 Print::Print(ParsedAction s) : print(ParseString(s.second)) {
 }
-void Print::Do(ProgramState* state __attribute__((unused))) {
-  std::cout << print;
+void Print::Do(ProgramState* state) {
+  state->OutputBuffer() << print;
 }
 std::string Print::Accept(ActionVisitor* visitor) {
   return visitor->VisitPrint(this);
@@ -108,7 +108,7 @@ PrintValue::PrintValue(ParsedAction s) {
   aff = GetAffectedValue(s.first[0]);
 }
 void PrintValue::Do(ProgramState* state) {
-  std::cout << AffectedNode(state, aff);
+  state->OutputBuffer() << AffectedNode(state, aff);
 }
 std::string PrintValue::Accept(ActionVisitor* visitor) {
   return visitor->VisitPrintValue(this);
