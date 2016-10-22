@@ -64,6 +64,10 @@ std::ostream& ProgramState::OutputBuffer() {
   return output_buffer_;
 }
 
-std::stringstream& ProgramState::OutputBufferString() {
-  return output_buffer_;
+std::string ProgramState::OutputBufferString() {
+  return output_buffer_.str();
+}
+
+void ProgramState::EmptyOutputBuffer() {
+  output_buffer_.str(std::string());
 }

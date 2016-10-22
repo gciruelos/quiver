@@ -29,7 +29,9 @@ class ProgramState {
   uint64_t const& NextNode() const;
 
   std::ostream& OutputBuffer();
-  std::stringstream& OutputBufferString();
+
+  std::string OutputBufferString();
+  void EmptyOutputBuffer();
 
  private:
   uint64_t accumulator_;

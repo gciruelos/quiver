@@ -108,12 +108,14 @@ void Program::Execute(std::ostream& output) {
                 << "Current node value: " << state_->CurrentNodeValue()
                 << std::endl;
     }
-    output << state_->OutputBufferString().str();
-    state_->OutputBufferString().str(std::string());
+    output << state_->OutputBufferString();
+    state_->EmptyOutputBuffer();
     GetAction(current_node, condition)->Do(state);
     state_->CurrentNode() = state_->NextNode();
     state_->LastNode() = current_node;
   }
+  output << state_->OutputBufferString();
+  state_->EmptyOutputBuffer();
 }
 
 void Program::Dot() {
