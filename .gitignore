@@ -36,3 +36,5 @@ graph.ps
 
 quiver
 perf.data*
+
+doc/quiver.js
