@@ -11,7 +11,7 @@ OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.cc=.o)))
 EXECUTABLE = quiver
 MKDIR_P = mkdir -p
 
-.PHONY: all clean debug travis
+.PHONY: all clean debug test travis
 
 all: $(OBJ_DIR) $(EXECUTABLE)
 
@@ -25,13 +25,7 @@ perf: OPT_FLAGS+= -ggdb -fno-rtti -fno-omit-frame-pointer
 perf: all
 
 travis: CC=$(CXX)
-travis: all
-	./$(EXECUTABLE) examples/1to10.quiv
-	./$(EXECUTABLE) examples/factorial.quiv 11
-	./$(EXECUTABLE) examples/primes.quiv
-	./$(EXECUTABLE) examples/hello-world.quiv
-	./$(EXECUTABLE) examples/99-bottles.quiv
-	./$(EXECUTABLE) examples/empty.quiv
+travis: all test
 
 $(OBJ_DIR):
 	${MKDIR_P} $@
@@ -42,6 +36,8 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cc
 $(EXECUTABLE): $(OBJS)
 	$(CC) $(LFLAGS) $(OPT_FLAGS) $^ -o $@
 
+test:
+	cd test && make all
 
 valgrind: clean debug
 	valgrind -v --num-callers=20 --leak-check=yes --leak-resolution=high --show-reachable=yes ./$(EXECUTABLE) examples/primes.quiv
