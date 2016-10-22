@@ -25,7 +25,7 @@ perf: OPT_FLAGS+= -ggdb -fno-rtti -fno-omit-frame-pointer
 perf: all
 
 travis: CC=$(CXX)
-travis: all test
+travis: | all test
 
 $(OBJ_DIR):
 	${MKDIR_P} $@

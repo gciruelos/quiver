@@ -16,6 +16,6 @@ addons:
 
 script: 
 - $CXX --version
-- make -j travis
+- make travis
 
 
