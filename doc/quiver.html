@@ -1,0 +1,77 @@
+
+<!doctype html>
+<html>
+  <head>
+    <script type="text/javascript">
+
+      ///////////////////////////////////////////////////
+      // INITIALIZATION                                //
+      ///////////////////////////////////////////////////
+
+      var input = "This is from the standard input\n";
+      var i = 0;
+      // Function Module.onRuntimeInitialized is called after emscripten code
+      // has finished loading.
+      var Module = {
+        noInitialRun: true,
+        MAX_OUTPUT_BUFFER: 16 * 1024,
+      };
+     
+      var Program = {
+        initialize: function() {
+          Program.stdinBuffer = Module._malloc(
+              30 * Int8Array.BYTES_PER_ELEMENT);
+          Program.stdoutBuffer = Module._malloc(
+              Module.MAX_OUTPUT_BUFFER * Int8Array.BYTES_PER_ELEMENT);
+          for (var i = 0; i < Module.MAX_OUTPUT_BUFFER; i++) {
+            Module.setValue(Program.stdoutBuffer + i, 0, "i8");
+          }
+        }
+      };
+
+    </script>
+    <script type="text/javascript" src="port.js"></script>
+    <script type="text/javascript">
+        Program.initialize();
+
+        var evaluateProgram = function () {
+          document.getElementById("prog-stdout").innerHTML = '';
+
+          input = document.getElementById("prog").value;
+
+          Module.ccall(
+              'runProgramFromString', 'null',
+              ['string', 'number', 'number'],
+              [input, Program.stdoutBuffer, Module.MAX_OUTPUT_BUFFER]);
+
+          result = []
+          for (var i = 0; i < Module.MAX_OUTPUT_BUFFER; i++) {
+            result.push(
+                String.fromCharCode(
+                    Module.getValue(Program.stdoutBuffer + i, "i8")));
+            console.log(Module.getValue(Program.stdoutBuffer + i))
+          }
+          document.getElementById("prog-stdout").innerHTML=result.join("");
+        }
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <table>
+        <tr>
+          <td>
+            <textarea rows="20" cols="50" id="prog"></textarea>
+          </td>
+          <td>
+            <button type="button" onclick="evaluateProgram()">D1</button>
+          </td>
+          <td>
+            <textarea rows="20" cols="40" readonly id="prog-stdout"></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
+

@@ -5,7 +5,8 @@ CFLAGS = $(WARNINGS) -Werror -std=c++11 -pedantic
 LFLAGS =
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRCS = $(wildcard $(SRC_DIR)*.cc)
+EMSCRIPTEN_SRC = $(SRC_DIR)program_js.cc
+SRCS = $(filter-out $(EMSCRIPTEN_SRC), $(wildcard $(SRC_DIR)*.cc))
 OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.cc=.o)))
 EXECUTABLE = quiver
 MKDIR_P = mkdir -p
@@ -44,3 +45,6 @@ $(EXECUTABLE): $(OBJS)
 
 valgrind: clean debug
 	valgrind -v --num-callers=20 --leak-check=yes --leak-resolution=high --show-reachable=yes ./$(EXECUTABLE) examples/primes.quiv
+
+javascript: $(SRCS) $(EMSCRIPTEN_SRC)
+	em++ -s EXPORTED_FUNCTIONS="['_runProgramFromString']" -O1 $(CFLAGS) $(SRCS) $(EMSCRIPTEN_SRC) -o doc/quiver.js
