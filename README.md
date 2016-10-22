@@ -116,4 +116,7 @@ Implementation
 
   I implemented a C++ interpreter for the language. I'd also like to write a LLVM backend if I have the time.
 
+Contributing
+------------
 
+Feel free to open an issue for suggestions, bugs, ideas, etc. Feel free to make pull requests, too.
